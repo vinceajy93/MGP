@@ -12,8 +12,11 @@ import android.widget.Button;
 
 public class Mainmenu extends Activity implements OnClickListener {
 
-    private Button btn_start;
-    private Button btn_help;
+    private Button btn_shop;
+    private Button btn_gadget;
+    private Button btn_achievement;
+    private Button btn_friend;
+    private Button btn_avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +28,38 @@ public class Mainmenu extends Activity implements OnClickListener {
 
         setContentView(R.layout.mainmenu);
 
-        btn_start = (Button) findViewById(R.id.btn_start);
-        btn_start.setOnClickListener(this);
+        btn_shop = (Button) findViewById(R.id.btn_shop);
+        btn_shop.setOnClickListener(this);
 
-        btn_help = (Button) findViewById(R.id.btn_help);
-        btn_help.setOnClickListener(this);
+        btn_gadget = (Button) findViewById(R.id.btn_gadget);
+        btn_gadget.setOnClickListener(this);
+
+        btn_achievement = (Button) findViewById(R.id.btn_achievement);
+        btn_achievement.setOnClickListener(this);
+
+        btn_friend = (Button) findViewById(R.id.btn_friend);
+        btn_friend.setOnClickListener(this);
+
+        btn_avatar = (Button) findViewById(R.id.btn_avatar);
+        btn_avatar.setOnClickListener(this);
     }
 
     public void onClick(View v) {
         Intent intent = new Intent();
 
-        if (v == btn_start) {
-            intent.setClass(this, Gamepage.class);
-        } else if (v == btn_help) {
-            //intent.setClass(this, Helppage.class);
+        if (v == btn_shop) {
+            intent.setClass(this, Shop.class);
+        } else if (v == btn_gadget) {
+            intent.setClass(this, Gadget.class);
+        }
+        else if (v == btn_achievement) {
+            intent.setClass(this, Achievement.class);
+        }
+        else if(v == btn_friend){
+            intent.setClass(this, Friend.class);
+        }
+        else if(v == btn_avatar){
+            intent.setClass(this, Avatar.class);
         }
 
         startActivity(intent);
@@ -51,11 +72,11 @@ public class Mainmenu extends Activity implements OnClickListener {
 
     //stop application
     protected void onStop() {
-        super.onPause();
+        super.onStop();
     }
 
     //destroy when not in use
     protected void onDestroy() {
-        super.onPause();
+        super.onDestroy();
     }
 }

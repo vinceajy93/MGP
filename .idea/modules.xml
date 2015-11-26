@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MGPgame(1st edit).iml" filepath="$PROJECT_DIR$/MGPgame(1st edit).iml" />
+      <module fileurl="file://$PROJECT_DIR$/MGP.iml" filepath="$PROJECT_DIR$/MGP.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

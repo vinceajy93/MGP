@@ -1,33 +1,43 @@
 package com.sidm.mgpgame;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.app.Activity;
-
 import android.widget.Button;
-/**
- * Created by 144116C on 11/23/2015.
- */
-public class Gamepage extends Activity{
 
-    /*Called when the activity is first created */
+
+public class Gadget extends Activity implements OnClickListener {
+
+    private Button btn_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);// hide title
-
-        //making it fullscreen window
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
 
-        //set our GamePanelSufaceview as the view
+        setContentView(R.layout.gadget);
 
-        setContentView(new GamePanelSurfaceView(this));
-
+        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(this);
     }
 
+    public void onClick(View v) {
+        Intent intent = new Intent();
+
+        //go back to menu page
+        if (v == btn_back) {
+            intent.setClass(this, Mainmenu.class);
+        }
+
+        startActivity(intent);
+    }
 
     //pause
     protected void onPause() {

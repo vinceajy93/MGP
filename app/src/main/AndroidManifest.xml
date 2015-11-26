@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        //================================Splash Screen =================================================
+        //=================================Splash Screen=============================================
         <activity
             android:name=".Splashpage">
 
@@ -21,7 +21,7 @@
         </activity>
 
 
-        //================================main menu =================================================
+        //================================Main Menu=================================================
         <activity
             android:name=".Mainmenu">
 
@@ -33,7 +33,67 @@
 
         </activity>
 
-        //================================game page=================================================
+        //===============================Gadget Page================================================
+        <activity
+            android:name=".Gadget">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //===============================Achievement================================================
+        <activity
+            android:name=".Achievement">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //====================================Avatar================================================
+        <activity
+            android:name=".Avatar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //===============================Friend Page================================================
+        <activity
+            android:name=".Friend">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //================================Shop Page=================================================
+        <activity
+            android:name=".Shop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //================================Game Page=================================================
         <activity
             android:name=".Gamepage">
 
