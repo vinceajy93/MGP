@@ -11,22 +11,21 @@
 
 
     <Button
-    android:id = "@+id/btn"
+    android:id = "@+id/btn_start"
     android:layout_width="100dp"
     android:layout_height="50dp"
     android:background="@drawable/start_button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="191dp" />
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true" />
 
 
     <Button
-        android:id = "@+id/btn_avatar"
+        android:id = "@+id/btn_options"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/option_button"
-        android:layout_alignTop="@+id/btn"
-        android:layout_alignStart="@+id/btn"
+        android:layout_alignTop="@+id/btn_start"
+        android:layout_alignStart="@+id/btn_start"
         android:layout_marginTop="93dp" />
 
 </RelativeLayout>

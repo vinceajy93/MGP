@@ -76,10 +76,4 @@ public class Homepage extends Activity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 }
