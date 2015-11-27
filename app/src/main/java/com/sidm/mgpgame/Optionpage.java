@@ -11,10 +11,9 @@ import android.widget.Button;
 /**
  * Created by Vincent's PC on 27/11/2015.
  */
-public class Mainmenu extends Activity implements View.OnClickListener {
+public class Optionpage extends Activity implements View.OnClickListener {
 
-    private Button btn_start;
-    private Button btn_options;
+    private Button btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,22 +23,17 @@ public class Mainmenu extends Activity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
 
-        setContentView(R.layout.mainmenu);
+        setContentView(R.layout.achievement);
 
-        btn_start = (Button) findViewById(R.id.btn_start);
-        btn_start.setOnClickListener(this);
-
-        btn_options = (Button) findViewById(R.id.btn_options);
-        btn_options.setOnClickListener(this);
+        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(this);
     }
 
     public void onClick(View v) {
         Intent intent = new Intent();
 
-        if (v == btn_start) {
+        if (v == btn_back) {
             intent.setClass(this, Homepage.class);
-        } else if (v == btn_options) {
-            intent.setClass(this, Optionpage.class);
         }
 
         startActivity(intent);

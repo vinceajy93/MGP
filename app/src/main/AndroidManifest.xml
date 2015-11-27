@@ -21,7 +21,19 @@
         </activity>
 
 
-        //================================Main Menu=================================================
+        //================================Home Page=================================================
+        <activity
+            android:name=".Homepage">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //================================Menu Page=================================================
         <activity
             android:name=".Mainmenu">
 
@@ -96,6 +108,18 @@
         //================================Game Page=================================================
         <activity
             android:name=".Gamepage">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+
+        //================================Option Page=================================================
+        <activity
+            android:name=".Optionpage">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

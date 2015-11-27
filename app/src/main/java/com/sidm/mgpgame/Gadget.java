@@ -33,7 +33,7 @@ public class Gadget extends Activity implements OnClickListener {
 
         //go back to menu page
         if (v == btn_back) {
-            intent.setClass(this, Mainmenu.class);
+            intent.setClass(this, Homepage.class);
         }
 
         startActivity(intent);

@@ -3,7 +3,6 @@ package com.sidm.mgpgame;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -51,14 +50,14 @@ public class Splashpage extends Activity {
         setContentView(R.layout.splashpage);
 
         //Load the images of the loading icons
-        Loading_Icon[0]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_1);
+       /* Loading_Icon[0]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_1);
         Loading_Icon[1]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_2);
         Loading_Icon[2]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_3);
         Loading_Icon[3]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_4);
         Loading_Icon[5]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_5);
         Loading_Icon[4]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_6);
         Loading_Icon[6]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_7);
-        Loading_Icon[7]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_8);
+        Loading_Icon[7]  = BitmapFactory.decodeResource(getResources(),R.drawable.loading_8);*/
 
 
 

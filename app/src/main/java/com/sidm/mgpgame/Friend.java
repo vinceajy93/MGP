@@ -32,7 +32,7 @@ public class Friend extends Activity implements OnClickListener {
         Intent intent = new Intent();
 
         if (v == btn_back) {
-            intent.setClass(this, Mainmenu.class);
+            intent.setClass(this, Homepage.class);
         }
 
         startActivity(intent);

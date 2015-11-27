@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@drawable/main_menu"
+    tools:context=".Homepage">
+
+    //============Gadget==================
+
+    //============Shop==================
+
+    <Button
+        android:id = "@+id/btn_shop"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/shop_button"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/btn_friend" />
+
+    //============Achievements==================
+    <Button
+
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/achievements_button"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:layout_alignTop="@+id/btn_friend"
+        android:layout_toEndOf="@+id/btn_friend"
+        android:id="@+id/button" />
+
+    //============friends circle==================
+
+    //============Avatar==================
+
+    <Button
+        android:id = "@+id/btn_gadget"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gadgets_button"
+        android:layout_row="5"
+        android:layout_column="0"
+        android:layout_gravity="center"
+        android:layout_alignTop="@+id/btn_shop"
+        android:layout_toEndOf="@+id/btn_shop" />
+
+    <Button
+        android:id = "@+id/btn_avatar"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/avatar_button"
+        android:layout_row="0"
+        android:layout_column="3"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_alignTop="@+id/btn_gadget"
+        android:layout_toEndOf="@+id/btn_gadget" />
+
+    <Button
+        android:id = "@+id/btn_friend"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/friends_button"
+        android:layout_row="0"
+        android:layout_column="2"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginStart="56dp"
+        android:layout_below="@+id/btn_shop"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
