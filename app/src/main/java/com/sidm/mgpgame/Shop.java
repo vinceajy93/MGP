@@ -39,7 +39,9 @@ public class Shop extends Activity implements OnClickListener {
             intent.setClass(this, Gamepage.class);
         }
         else if (v == btn_back){
+            onDestroy();
             intent.setClass(this, Homepage.class);
+
         }
         startActivity(intent);
     }

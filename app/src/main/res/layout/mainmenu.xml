@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@drawable/main_menu"
+    android:background="@drawable/bg_main_menu"
     tools:context=".Mainmenu">
 
 
@@ -14,7 +14,7 @@
     android:id = "@+id/btn_start"
     android:layout_width="100dp"
     android:layout_height="50dp"
-    android:background="@drawable/start_button"
+    android:background="@drawable/button_start"
     android:layout_centerVertical="true"
     android:layout_centerHorizontal="true" />
 
@@ -23,7 +23,7 @@
         android:id = "@+id/btn_options"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/option_button"
+        android:background="@drawable/button_option"
         android:layout_alignTop="@+id/btn_start"
         android:layout_alignStart="@+id/btn_start"
         android:layout_marginTop="93dp" />

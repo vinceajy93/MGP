@@ -33,9 +33,11 @@ public class Friend extends Activity implements OnClickListener {
 
         if (v == btn_back) {
             intent.setClass(this, Homepage.class);
+            startActivity(intent);
         }
 
-        startActivity(intent);
+
+        onDestroy();
     }
 
     //pause

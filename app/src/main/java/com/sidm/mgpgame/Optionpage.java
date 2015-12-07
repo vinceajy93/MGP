@@ -23,7 +23,7 @@ public class Optionpage extends Activity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
 
-        setContentView(R.layout.achievement);
+        setContentView(R.layout.options);
 
         btn_back = (Button) findViewById(R.id.btn_back);
         btn_back.setOnClickListener(this);
@@ -33,10 +33,11 @@ public class Optionpage extends Activity implements View.OnClickListener {
         Intent intent = new Intent();
 
         if (v == btn_back) {
-            intent.setClass(this, Homepage.class);
+            intent.setClass(this, Mainmenu.class);
         }
 
         startActivity(intent);
+        onDestroy();
     }
 
     //pause

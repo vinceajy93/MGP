@@ -23,7 +23,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap bg, scaledbg;
 
     // 1b) Define Screen width and Screen height as integer
-    int screenwidth, screenheight;
+    int ScreenWidth, ScreenHeight;
     // 1c) Variables for defining background start and end point\
     private short bgX, bgY;
     // 4a) bitmap array to stores 4 images of the spaceship
@@ -50,12 +50,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         // 1d) Set information to get screen size
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        screenwidth = metrics.widthPixels;
-        screenheight = metrics.heightPixels;
+        ScreenWidth = metrics.widthPixels;
+        ScreenHeight = metrics.heightPixels;
 
         // 1e)load the image when this class is being instantiated
-        bg = BitmapFactory.decodeResource(getResources(),R.drawable.gamescene);
-        scaledbg = Bitmap.createScaledBitmap(bg, screenwidth, screenheight, true);
+        bg = BitmapFactory.decodeResource(getResources(),R.drawable.bg_gamescene);
+        scaledbg = Bitmap.createScaledBitmap(bg, ScreenWidth, ScreenHeight, true);
 
         // 4c) Load the images of the spaceships
         Spaceship[0] = bg = BitmapFactory.decodeResource(getResources(),R.drawable.ship2_1);
@@ -109,7 +109,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             return;
         }
         canvas.drawBitmap(scaledbg, bgX, bgY, null);
-        canvas.drawBitmap(scaledbg, bgX + screenwidth, bgY, null);
+        canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY, null);
         // 4d) Draw the spaceships
         canvas.drawBitmap(Spaceship[SpaceshipIndex], 100, 100, null);
 
@@ -127,7 +127,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 bgX -= 500 * dt;
 
                 //wrapping
-                if( bgX < - screenwidth){
+                if( bgX < - ScreenWidth){
                     bgX = 0;
                 }
 

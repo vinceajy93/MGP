@@ -7,14 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@drawable/main_menu"
+    android:background="@drawable/bg_main_menu"
     tools:context=".Shop">
 
     <Button
         android:id = "@+id/btn_level1"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/button"
+        android:background="@drawable/button_placeholder"
         android:text="Level1"
         android:textSize = "18dp"
         android:textColor="#000080"
@@ -26,7 +26,7 @@
         android:id = "@+id/btn_back"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/back_button"
+        android:background="@drawable/button_back"
         android:text="Back"
         android:textSize = "18dp"
         android:textColor="#000080"

@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@drawable/main_menu"
+    android:background="@drawable/bg_main_menu"
     tools:context=".Homepage">
 
     <Button
         android:id = "@+id/btn_shop"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/shop_button"
+        android:background="@drawable/button_shop"
         android:layout_row="0"
         android:layout_column="0"
         android:layout_centerVertical="true"
@@ -23,7 +23,7 @@
         android:id="@+id/btn_achievement"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/achievements_button"
+        android:background="@drawable/button_achievements"
         android:layout_row="0"
         android:layout_column="1"
         android:layout_alignTop="@+id/btn_friend"
@@ -34,7 +34,7 @@
         android:id = "@+id/btn_gadget"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/gadgets_button"
+        android:background="@drawable/button_gadgets"
         android:layout_row="5"
         android:layout_column="0"
         android:layout_gravity="center"
@@ -45,7 +45,7 @@
         android:id = "@+id/btn_avatar"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/avatar_button"
+        android:background="@drawable/button_avatar"
         android:layout_row="0"
         android:layout_column="3"
         android:layout_gravity="center_horizontal|bottom"
@@ -56,7 +56,7 @@
         android:id = "@+id/btn_friend"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/friends_button"
+        android:background="@drawable/button_friends"
         android:layout_row="0"
         android:layout_column="2"
         android:layout_gravity="center_horizontal|bottom"
@@ -64,4 +64,11 @@
         android:layout_below="@+id/btn_shop"
         android:layout_alignParentStart="true" />
 
+    <Button
+        android:id = "@+id/btn_back"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_back"
+        android:layout_alignTop="@+id/btn_achievement"
+        android:layout_toEndOf="@+id/btn_achievement" />
 </RelativeLayout>

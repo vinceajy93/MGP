@@ -33,9 +33,11 @@ public class Avatar extends Activity implements OnClickListener {
 
         if (v == btn_back) {
             intent.setClass(this, Homepage.class);
+            startActivity(intent);
         }
+        onDestroy();
 
-        startActivity(intent);
+
     }
 
     //pause

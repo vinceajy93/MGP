@@ -17,6 +17,7 @@ public class Homepage extends Activity implements OnClickListener {
     private Button btn_achievement;
     private Button btn_friend;
     private Button btn_avatar;
+    private Button btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class Homepage extends Activity implements OnClickListener {
 
         btn_avatar = (Button) findViewById(R.id.btn_avatar);
         btn_avatar.setOnClickListener(this);
+
+        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -57,9 +61,12 @@ public class Homepage extends Activity implements OnClickListener {
             intent.setClass(this, Friend.class);
         } else if (v == btn_avatar) {
             intent.setClass(this, Avatar.class);
+        }else if (v == btn_back) {
+            intent.setClass(this, Mainmenu.class);
         }
 
         startActivity(intent);
+
     }
 
     //pause

@@ -43,6 +43,7 @@ public class Mainmenu extends Activity implements View.OnClickListener {
         }
 
         startActivity(intent);
+        this.onDestroy();
     }
 
     //pause
