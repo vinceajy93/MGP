@@ -15,8 +15,9 @@
     android:layout_width="100dp"
     android:layout_height="50dp"
     android:background="@drawable/button_start"
-    android:layout_centerVertical="true"
-    android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="97dp" />
 
 
     <Button
@@ -24,8 +25,8 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/button_option"
-        android:layout_alignTop="@+id/btn_start"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/btn_start"
-        android:layout_marginTop="93dp" />
+        android:layout_marginBottom="23dp" />
 
 </RelativeLayout>

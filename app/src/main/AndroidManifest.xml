@@ -6,6 +6,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:screenOrientation="landscape"
         android:supportsRtl="true">
 
         //=================================Splash Screen============================================
@@ -128,7 +129,17 @@
             </intent-filter>
 
         </activity>
+        //================================Sprite Animation===============================================
+        <activity
+            android:name=".SpriteAnimation">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

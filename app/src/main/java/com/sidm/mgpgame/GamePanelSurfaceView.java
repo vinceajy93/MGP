@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -114,6 +115,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawBitmap(Spaceship[SpaceshipIndex], 100, 100, null);
 
         // Bonus) To print FPS on the screen
+        Paint paint = new Paint();
+        paint.setARGB(255,0,0,0);
+        paint.setStrokeWidth(100);
+        paint.setTextSize(30);
+        canvas.drawText("FPS: " + FPS, 130, 75, paint);
     }
 
 
