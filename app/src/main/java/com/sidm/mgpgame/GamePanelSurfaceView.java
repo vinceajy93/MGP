@@ -4,11 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.graphics.Paint;
+import java.util.Random;
 
 /**
  * Created by 144116C on 11/23/2015.
@@ -19,16 +22,20 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     // Implement this interface to receive information about changes to the surface.
 
     private GameThread myThread = null; // Thread to control the rendering
+    protected  static final String TAG = null;
 
     // 1a) Variables used for background rendering
     private Bitmap bg, scaledbg;
 
     // 1b) Define Screen width and Screen height as integer
     int ScreenWidth, ScreenHeight;
+
     // 1c) Variables for defining background start and end point\
     private short bgX, bgY;
+
     // 4a) bitmap array to stores 4 images of the spaceship
     private Bitmap[] Spaceship = new Bitmap[4];
+
     // 4b) Variable as an index to keep track of the spaceship images
     private short SpaceshipIndex = 0;
 
@@ -36,9 +43,41 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     public float FPS;
     float deltaTime;
     long dt;
+    Paint paint = new Paint();
 
     // Variable for Game State check
     private short GameState;
+
+    // Variables for touch events
+    private short mX = 0, mY = 0;
+
+    // Variables for something
+    int aX, aY;
+
+    // Variables for Drag
+    private int score = 0;
+    private boolean moveShip = false;
+
+    // Variables for vibrations
+    public Vibrator vibrate;
+    private int hits = 3;
+
+    long pattern[] = {0, 200, 500};
+    // Time to wait before vibrator is ON,
+    // Time to keep vibrator ON,
+    // Time till vibration is OFF or till vibrator is ON
+
+    public void startVibration()
+    {
+        long Pattern[] = {0, 200, 500};
+        vibrate = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        vibrate.vibrate(pattern, 0); // sets the vibration as: REPEAT. -1 as do not repeat
+        Log.v(TAG, "Test");
+    }
+    public void stopVibrate()
+    {
+        vibrate.cancel();
+    }
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView (Context context){
@@ -104,6 +143,43 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     }
 
+    public boolean checkCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
+    {
+        if(x2 >= x1 && x2 <= x1 + w1) // Start to detect collision of the top left corner
+        {
+            if(y2 > y1 && y2 < y1 + h1) //  Comparing yellow box to blue box
+            {
+                return true;
+            }
+        }
+
+        if(x2 + w2 >= x1 && x2 + w2 <= x1 + w1) // Start to detect collision of the top right corner
+        {
+            if(y2 > y1 && y2 < y1 + h1)
+            {
+                return true;
+            }
+        }
+
+        if(x2 >= x1 && x2 < x1 + w1) // Start to detect collision of the bottom left
+        {
+            if(y2 + h2 > y1 && y2 + h2 < y1 + h1)
+            {
+                return true;
+            }
+        }
+
+        if(x2 + w2 >= x1 && x2 + w2 < x1 + w1) // Start to detect collision of the bottom right
+        {
+            if(y2 + h2 > y1 && y2 + h2 < y1 + h1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void RenderGameplay(Canvas canvas) {
         // 2) Re-draw 2nd image after the 1st image ends
         if (canvas == null){
@@ -161,8 +237,66 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         // 5) In event of touch on screen, the spaceship will relocate to the point of touch
 
+        int action = event.getAction(); // check for the action of touch
 
-        return super.onTouchEvent(event);
+        short X = (short) event.getX();
+        short Y = (short) event.getY();
+
+        switch(action)
+        {
+            case MotionEvent.ACTION_DOWN:
+                if(checkCollision(mX, mY, Spaceship[SpaceshipIndex].getWidth(),
+                        Spaceship[SpaceshipIndex].getHeight(), X, Y, 0, 0))
+                {
+                    moveShip = true;
+                }
+                else
+                {
+                    moveShip = false;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(moveShip == true)
+                {
+                    // New Location where the image lands on
+                    mX = (short) (X - Spaceship[SpaceshipIndex].getWidth() / 2);
+                    mY = (short) (X - Spaceship[SpaceshipIndex].getHeight() / 2);
+                }
+
+                //check if stone and ship collide
+               /* if(checkCollision(mX,mY,Spaceship[SpaceshipIndex].getWidth(),
+                        Spaceship[SpaceshipIndex].getHeight(),
+                        aX,aY,stone_anim.getSpriteWidth(),stone_anim.getSpriteHeight()))
+                {
+                    Random r = new Random();
+                    aX = r.nextInt(ScreenWidth);
+                    aY = r.nextInt(ScreenHeight);
+                    score += 10;
+                    hits -= 1;
+                    // if (hits == 3)
+                    //  {
+                    //  canvas.drawBitmap(score, 28, Screenheight - 700, null);
+                    //  canvas.drawBitmap(score, 58, Screenheight - 700, null);
+                    //   canvas.drawBitmap(score, 88, Screenheight - 700, null);
+                    //  }
+                    //  else if(hits == 2)
+                    //{
+                    //   canvas.drawBitmap(score, 28, Screenheight - 700, null);
+                    //    canvas.drawBitmap(score, 58, Screenheight - 700, null);
+
+                    //  }
+                    //   else if (hits == 1)
+                    //  {
+                    //   canvas.drawBitmap(score, 28, Screenheight - 700, null)
+                    // }
+                    //test for vibrate
+                    startVibration();
+                }*/
+                break;
+        }
+
+        return true;
+        // return super.onTouchEvent(event);
     }
 }
 
