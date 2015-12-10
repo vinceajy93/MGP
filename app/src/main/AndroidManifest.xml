@@ -13,7 +13,8 @@
 
         //=================================Splash Screen============================================
         <activity
-            android:name=".Splashpage">
+            android:name=".Splashpage"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +27,8 @@
 
         //================================Home Page=================================================
         <activity
-            android:name=".Homepage">
+            android:name=".Homepage"
+        android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +40,8 @@
 
         //================================Menu Page=================================================
         <activity
-            android:name=".Mainmenu">
+            android:name=".Mainmenu"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +53,8 @@
 
         //===============================Gadget Page================================================
         <activity
-            android:name=".Gadget">
+            android:name=".Gadget"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,7 +66,8 @@
 
         //===============================Achievement================================================
         <activity
-            android:name=".Achievement">
+            android:name=".Achievement"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,7 +79,8 @@
 
         //====================================Avatar================================================
         <activity
-            android:name=".Avatar">
+            android:name=".Avatar"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -86,7 +92,8 @@
 
         //===============================Friend Page================================================
         <activity
-            android:name=".Friend">
+            android:name=".Friend"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,7 +105,8 @@
 
         //================================Shop Page=================================================
         <activity
-            android:name=".Shop">
+            android:name=".Shop"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -110,7 +118,8 @@
 
         //================================Game Page=================================================
         <activity
-            android:name=".Gamepage">
+            android:name=".Gamepage"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -122,7 +131,8 @@
 
         //================================Option Page===============================================
         <activity
-            android:name=".Optionpage">
+            android:name=".Optionpage"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -133,7 +143,8 @@
         </activity>
         //================================Sprite Animation===============================================
         <activity
-            android:name=".SpriteAnimation">
+            android:name=".SpriteAnimation"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -144,7 +155,8 @@
         </activity>
         //================================Win Page===============================================
         <activity
-            android:name=".Winpage">
+            android:name=".Winpage"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -155,7 +167,8 @@
         </activity>
         //================================Lose Page===============================================
         <activity
-            android:name=".Losepage">
+            android:name=".Losepage"
+            android:screenOrientation="landscape">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

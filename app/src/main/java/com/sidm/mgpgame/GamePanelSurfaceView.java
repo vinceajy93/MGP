@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
@@ -18,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import java.sql.SQLSyntaxErrorException;
 import java.util.Random;
 
 /**
@@ -42,6 +45,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     // 4a) bitmap array to stores 4 images of the spaceship
     private Bitmap[] Spaceship = new Bitmap[4];
+
+    //bitmap array to store 2 images of the health(0 - gray 1 - color)
+    private Bitmap[] Hearts = new Bitmap[2];
 
     // 4b) Variable as an index to keep track of the spaceship images
     private short SpaceshipIndex = 0;
@@ -71,12 +77,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //variables for gameplay
     private int health = 3;
 
+    //variable for invulnerability tiem
+    private boolean isHit = false;
+    protected int invunTime = 50; //in milli seconds
+
     //Variables for vibration switch button
     private Switch Sw_vibrate;
     private boolean vibrate_on;
 
     //Variable to print cash at hand
-    private TextView handCash;
+    //private TextView handCash;
     private int cash = 1000;
 
     long pattern[] = {0, 200, 500};
@@ -90,14 +100,27 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //char sprites
     //private SpriteAnimation robot_anim;
     private SpriteAnimation android_anim;
+    private int translateplayerY; //for jumping
+    protected boolean isJump;
+
+    //enemy sprites
+    private SpriteAnimation enemy_anim;
+    private int translateEnemyX;
+    private int randEnemyTrans_spd = 10;
 
     protected void onCreate(Bundle savedInstanceState) {
         Sw_vibrate = (Switch) findViewById(R.id.Sw_vibrate);
-        handCash = (TextView) findViewById(R.id.handCash);
+        //handCash = (TextView) findViewById(R.id.handCash);
 
         //Set the switch to ON
         Sw_vibrate.setChecked(true);
         vibrate_on = false;
+
+        //init enemy translate pos
+        translateEnemyX = 1290;
+
+        //initi player translate Y pos for jumping
+        translateplayerY = 0;
 
         //Attach a listener to check for changes in state
         Sw_vibrate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -114,7 +137,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     }
 
     public void startVibration() {
-        if(vibrate_on){
+        if (vibrate_on) {
             long Pattern[] = {0, 200, 500};
             vibrate = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             vibrate.vibrate(pattern, 0); // sets the vibration as: REPEAT. -1 as do not repeat
@@ -150,10 +173,15 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         Spaceship[2] = BitmapFactory.decodeResource(getResources(), R.drawable.ship2_3);
         Spaceship[3] = BitmapFactory.decodeResource(getResources(), R.drawable.ship2_4);
 
+        //load the images of the hearts
+        Hearts[0] = BitmapFactory.decodeResource(getResources(), R.drawable.gray_heart);
+        Hearts[1] = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
 
         //Load the animation sprite sheet(char)
-       // robot_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(),R.drawable.char_robot),600,73,10,10);
-        android_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(),R.drawable.char_android),181,41,6,6);
+        // robot_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(),R.drawable.char_robot),600,73,10,10);
+        android_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(), R.drawable.char_android), 362, 82, 6, 6);
+        enemy_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(), R.drawable.enemy), 234, 36, 8, 8);
+
 
         // Create the game loop thread
         myThread = new GameThread(getHolder(), this);
@@ -226,39 +254,104 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         return false;
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+
+        int width = bm.getWidth();
+
+        int height = bm.getHeight();
+
+        float scaleWidth = ((float) newWidth) / width;
+
+        float scaleHeight = ((float) newHeight) / height;
+
+        // CREATE A MATRIX FOR THE MANIPULATION
+
+        Matrix matrix = new Matrix();
+
+        // RESIZE THE BIT MAP
+
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // RECREATE THE NEW BITMAP
+
+        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+
+        return resizedBitmap;
+
+    }
+
     public void RenderGameplay(Canvas canvas) {
         // 2) Re-draw 2nd image after the 1st image ends
         if (canvas == null) {
             return;
         }
         canvas.drawBitmap(scaledbg, bgX, bgY, null);
-        canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY /2, null);
+        canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY / 2, null);
 
         // 4d) Draw the spaceships
-        canvas.drawBitmap(Spaceship[SpaceshipIndex], 100, 100, null);
+        //canvas.drawBitmap(Spaceship[SpaceshipIndex], 100, 100, null);
+
+        //Draw the hearts
+        switch (health) {
+            case 3:
+                canvas.drawBitmap(Hearts[1], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
+                canvas.drawBitmap(Hearts[1], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
+                canvas.drawBitmap(Hearts[1], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                break;
+
+            case 2:
+                canvas.drawBitmap(Hearts[1], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
+                canvas.drawBitmap(Hearts[1], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                break;
+
+            case 1:
+                canvas.drawBitmap(Hearts[1], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                break;
+
+            case 0:
+                canvas.drawBitmap(Hearts[0], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                break;
+        }
+
 
         //draw char
-      //  robot_anim.draw(canvas);
-       // robot_anim.setY(600);
+        // robot_anim.draw(canvas);
+        // robot_anim.setY(600);
 
         //draw char android
         android_anim.draw(canvas);
-        android_anim.setY(400);
+        android_anim.setY(500 + translateplayerY);
+
+
+        //draw enemy
+        enemy_anim.draw(canvas);
+        enemy_anim.setY(600);
+        enemy_anim.setX(translateEnemyX);
 
         // Bonus) To print FPS on the screen
         Paint paint = new Paint();
         paint.setARGB(255, 0, 0, 0);
         paint.setStrokeWidth(100);
-        paint.setTextSize(30);
-        canvas.drawText("FPS: " + FPS, 130, 75, paint);
+        paint.setTextSize(50);
+        paint.setFakeBoldText(true);
+        paint.setColor(Color.WHITE);
+        canvas.drawText("FPS: " + FPS, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
+        //Print score
+        canvas.drawText("SCORE: " + score, ScreenWidth * 0.6f, ScreenHeight * 0.1f, paint);
+
     }
 
 
     //Update method to update the game play
     public void update(float dt, float fps) {
-        FPS = fps;
+        FPS = (int) fps;
 
-        handCash.setText("cash at hand" + cash);
+
         switch (GameState) {
             case 0: {
                 // 3) Update the background to allow panning effect
@@ -269,6 +362,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     bgX = 0;
                 }
 
+                //brief invulnerability after hit
+                invunTime++;
 
                 // 4e) Update the spaceship images / shipIndex so that the animation will occur.
                 SpaceshipIndex++; //edit according to what you need
@@ -276,16 +371,84 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 //robot_anim.update(System.currentTimeMillis());
                 android_anim.update(System.currentTimeMillis());
+                enemy_anim.update(System.currentTimeMillis());
 
-                if(health < 0)
-                    //intent.setClass(this, Losepage.class);
+                //update enemy to move left per sec
+                enemy_anim.setX(translateEnemyX -= 5);
 
-                if(score >= 100)
-                    //
+                if (translateEnemyX < 0) {
+                    translateEnemyX = ScreenWidth - randEnemyTrans_spd;
+
+                    Random rn = new Random();
+
+                    randEnemyTrans_spd = rn.nextInt(20) + 10;
+                    //Difficulty level
+                    if (score >= 50 && score < 100) {
+                        randEnemyTrans_spd = rn.nextInt(100) + 30;
+                    } else if (score >= 100 && score < 500) {
+                        randEnemyTrans_spd = rn.nextInt(200) + 50;
+                    } else if (score >= 500 && score < 1000) {
+                        randEnemyTrans_spd = rn.nextInt(400) + 100;
+                    }
+
+
+                    score += 10;
+                }
+
+                if (invunTime >= 50 && isHit == false) {
+                    isHit = true;
+                }
+
+                if (health <= 0)
+                    health = 0;
+
+
+                //player's jump
+                if (isJump == true) {
+                    translateplayerY -= 10;
+                }
+
+                if (translateplayerY == -50) {
+                    translateplayerY++;
+                }
+
+                //error checking if translateplayerY less than 0
+                if (translateplayerY < 0)
+                    translateplayerY = 0;
+            }
+
+            System.out.println(translateplayerY);
+            if (checkCollision(android_anim.getX(), android_anim.getY(), android_anim.getSpriteWidth(),
+                    android_anim.getSpriteHeight(),
+                    enemy_anim.getX(), enemy_anim.getY(), enemy_anim.getSpriteWidth(), enemy_anim.getSpriteHeight())) {
+
+                if (isHit == true) {
+                    invunTime = 0;
+                    health--;
+                    score -= 10;
+
+
+                    isHit = false;
+
+                    if (score <= 0)
+                        score = 0;
+                }
+
+                //lose
+                if (health <= 0) {
+                    //you lose
+                    //intent.setClass(,Losepage.class);
+                }
+                //win
+                if (score >= 1000) {
+                    //you win
+                    //intent.setClass(,Winpage.class);
+                }
             }
             break;
         }
     }
+
 
     // Rendering is done on Canvas
     public void doDraw(Canvas canvas) {
@@ -308,30 +471,49 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (checkCollision(mX, mY, Spaceship[SpaceshipIndex].getWidth(),
-                        Spaceship[SpaceshipIndex].getHeight(), X, Y, 0, 0)) {
-                    moveShip = true;
-                } else {
-                    moveShip = false;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (moveShip == true) {
-                    // New Location where the image lands on
-                    mX = (short) (X - Spaceship[SpaceshipIndex].getWidth() / 2);
-                    mY = (short) (X - Spaceship[SpaceshipIndex].getHeight() / 2);
+
+//                if (checkCollision(mX, mY, Spaceship[SpaceshipIndex].getWidth(),
+//                        Spaceship[SpaceshipIndex].getHeight(), X, Y, 0, 0)) {
+//                    moveShip = true;
+//                } else {
+//                    moveShip = false;
+//                }
+
+                //dectect if there is a touch on screen
+                if (checkCollision(0, 0, ScreenWidth, ScreenHeight, X, Y, 0, 0)) {
+                    if (translateplayerY <= 0) {
+                        isJump = true;
+                        translateplayerY -= 10;
+                        System.out.println(isJump);
+                        if (translateplayerY == 30) {
+                            isJump = false;
+                            translateplayerY += 10;
+                        }
+                    }
+
+                    //error checking if translateplayerY less than 0
+                    if (translateplayerY < 0)
+                        translateplayerY = 0;
                 }
 
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+//                if (moveShip == true) {
+//                    // New Location where the image lands on
+//                    mX = (short) (X - Spaceship[SpaceshipIndex].getWidth() / 2);
+//                    mY = (short) (X - Spaceship[SpaceshipIndex].getHeight() / 2);
+//                }
+
                 //check if stone and ship collide
-                if(checkCollision(mX,mY,Spaceship[SpaceshipIndex].getWidth(),
+                /*if (checkCollision(mX, mY, Spaceship[SpaceshipIndex].getWidth(),
                         Spaceship[SpaceshipIndex].getHeight(),
-                        aX,aY,android_anim.getSpriteWidth(),android_anim.getSpriteHeight()))
-                {
+                        aX, aY, android_anim.getSpriteWidth(), android_anim.getSpriteHeight())) {
                     Random r = new Random();
                     aX = r.nextInt(ScreenWidth);
                     aY = r.nextInt(ScreenHeight);
-                    score += 10;
-                    health -= 1;
+                    // score += 10;
+                    //health -= 1;
 
 
                     // if (hits == 3)
@@ -353,7 +535,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     //test for vibrate
                     startVibration();
                 }
-                break;
+                break;*/
         }
 
         return true;
