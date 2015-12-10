@@ -44,7 +44,7 @@ public class Homepage extends Activity implements OnClickListener {
         btn_avatar = (Button) findViewById(R.id.btn_avatar);
         btn_avatar.setOnClickListener(this);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
     }
 

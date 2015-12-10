@@ -3,4 +3,6 @@
     <item name="btn_start" type="id" />
     <item name="btn_options" type="id" />
     <item name="btn_achievement" type="id" />
+    <item name="Sw_vibrate" type="id" />
+    <item name="handCash" type="id" />
 </resources>

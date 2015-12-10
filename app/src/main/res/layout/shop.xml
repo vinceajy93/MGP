@@ -11,16 +11,16 @@
     tools:context=".Shop">
 
     <Button
-        android:id = "@+id/btn_level1"
+        android:id = "@+id/btn_retry"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:background="@drawable/button_placeholder"
-        android:layout_marginStart="56dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:background="@drawable/button_lv1"
+        android:layout_above="@+id/btn_level2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="37dp" />
 
     <Button
-        android:id = "@+id/btn_back"
+        android:id = "@+id/btn_level2"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/button_back"
@@ -28,5 +28,31 @@
         android:layout_marginStart="23dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/gray_star"
+        android:background="@drawable/star_notearned"
+        android:layout_marginBottom="30dp"
+        android:layout_alignBottom="@+id/btn_level2"
+        android:layout_toStartOf="@+id/btn_retry" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/gray_star2"
+        android:background="@drawable/star_notearned"
+        android:layout_alignTop="@+id/gray_star"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageView"
+        android:background="@drawable/star_notearned"
+        android:layout_alignTop="@+id/gray_star2"
+        android:layout_toEndOf="@+id/gray_star2"
+        android:layout_marginStart="29dp" />
 
 </RelativeLayout>

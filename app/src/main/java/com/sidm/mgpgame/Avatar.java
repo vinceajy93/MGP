@@ -24,7 +24,7 @@ public class Avatar extends Activity implements OnClickListener {
 
         setContentView(R.layout.avatar);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
     }
 

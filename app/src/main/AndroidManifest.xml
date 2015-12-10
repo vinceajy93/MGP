@@ -142,6 +142,28 @@
             </intent-filter>
 
         </activity>
+        //================================Win Page===============================================
+        <activity
+            android:name=".Winpage">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
+        //================================Lose Page===============================================
+        <activity
+            android:name=".Losepage">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@drawable/bg_lose"
+    tools:context=".Losepage">
+
+    <Button
+        android:id = "@+id/btn_retry"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_retry"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/gray_star"
+        android:background="@drawable/star_notearned"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/btn_retry"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/gray_star2"
+        android:background="@drawable/star_notearned"
+        android:layout_alignTop="@+id/gray_star"
+        android:layout_toStartOf="@+id/btn_retry" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageView"
+        android:background="@drawable/star_notearned"
+        android:layout_alignTop="@+id/gray_star"
+        android:layout_toEndOf="@+id/btn_retry" />
+
+</RelativeLayout>

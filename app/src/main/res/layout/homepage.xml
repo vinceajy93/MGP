@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@drawable/bg_main_menu"
-    tools:context=".Homepage">
+    tools:context=".Homepage"
+    android:id="@+id/lue">
 
     <Button
         android:id = "@+id/btn_shop"
@@ -50,7 +51,8 @@
         android:layout_column="3"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_alignTop="@+id/btn_gadget"
-        android:layout_toEndOf="@+id/btn_gadget" />
+        android:layout_alignStart="@+id/btn_level2"
+        android:layout_alignWithParentIfMissing="false" />
 
     <Button
         android:id = "@+id/btn_friend"
@@ -65,7 +67,7 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id = "@+id/btn_back"
+        android:id = "@+id/btn_level2"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/button_back"

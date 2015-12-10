@@ -25,10 +25,10 @@ public class Shop extends Activity implements OnClickListener {
 
         setContentView(R.layout.shop);
 
-        btn_level1 = (Button) findViewById(R.id.btn_level1);
+        btn_level1 = (Button) findViewById(R.id.btn_retry);
         btn_level1.setOnClickListener(this);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
     }
 

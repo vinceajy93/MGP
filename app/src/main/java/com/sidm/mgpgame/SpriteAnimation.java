@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 /**
  * Created by vincent's on 8/12/2015.
  */
+
 public class SpriteAnimation extends Activity{
 
     private Bitmap bitmap; // the animation sequence

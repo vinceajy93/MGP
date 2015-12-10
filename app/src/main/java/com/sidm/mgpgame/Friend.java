@@ -24,7 +24,7 @@ public class Friend extends Activity implements OnClickListener {
 
         setContentView(R.layout.friend);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
     }
 

@@ -8,12 +8,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+
 /**
  * Created by Vincent's PC on 27/11/2015.
  */
 public class Optionpage extends Activity implements View.OnClickListener {
 
     private Button btn_back;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,10 @@ public class Optionpage extends Activity implements View.OnClickListener {
 
         setContentView(R.layout.options);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
+
+
     }
 
     public void onClick(View v) {
@@ -40,7 +44,9 @@ public class Optionpage extends Activity implements View.OnClickListener {
         onDestroy();
     }
 
-    //pause
+
+
+        //pause
     protected void onPause() {
         super.onPause();
     }

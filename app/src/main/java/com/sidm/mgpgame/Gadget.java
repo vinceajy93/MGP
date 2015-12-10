@@ -2,6 +2,8 @@ package com.sidm.mgpgame;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,7 +15,7 @@ import android.widget.Button;
 public class Gadget extends Activity implements OnClickListener {
 
     private Button btn_back;
-
+    private int cash = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +26,7 @@ public class Gadget extends Activity implements OnClickListener {
 
         setContentView(R.layout.gadget);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
     }
 
@@ -41,6 +43,15 @@ public class Gadget extends Activity implements OnClickListener {
         onDestroy();
     }
 
+    public void update(Canvas canvas)
+    {
+        // Bonus) To print FPS on the screen
+        Paint paint = new Paint();
+        paint.setARGB(255, 0, 0, 0);
+        paint.setStrokeWidth(100);
+        paint.setTextSize(30);
+        canvas.drawText("Cash $: " + cash, 130, 75, paint);
+    }
     //pause
     protected void onPause() {
         super.onPause();

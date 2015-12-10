@@ -10,7 +10,7 @@
     tools:context=".Gadget">
 
     <Button
-        android:id = "@+id/btn_back"
+        android:id = "@+id/btn_level2"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/button_back"
@@ -18,5 +18,33 @@
         android:layout_marginStart="23dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/antiv_dog"
+        android:id="@+id/btn_dogvirus"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AntiBull+         Cost: $300"
+        android:id="@+id/txt_antibull"
+        android:textSize="20dp"
+        android:textColor="#030303"
+        android:layout_above="@+id/btn_level2"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/handcash"
+        android:layout_above="@+id/btn_dogvirus"
+        android:layout_alignStart="@+id/btn_level2"
+        android:layout_marginBottom="33dp"
+        android:textSize="15dp"
+        android:textColor="#030303" />
 
 </RelativeLayout>

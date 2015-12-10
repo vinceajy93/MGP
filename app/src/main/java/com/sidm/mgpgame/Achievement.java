@@ -24,7 +24,7 @@ public class Achievement extends Activity implements OnClickListener {
 
         setContentView(R.layout.achievement);
 
-        btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
     }
 

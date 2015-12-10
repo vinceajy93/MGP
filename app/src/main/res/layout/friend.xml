@@ -10,7 +10,7 @@
     tools:context=".Friend">
 
     <Button
-        android:id = "@+id/btn_back"
+        android:id = "@+id/btn_level2"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/button_back"
