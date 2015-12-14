@@ -3,6 +3,7 @@ package com.sidm.mgpgame;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -33,10 +34,9 @@ public class Achievement extends Activity implements OnClickListener {
 
         if (v == btn_back) {
             intent.setClass(this, Homepage.class);
-            startActivity(intent);
-
+            finish();
         }
-
+        startActivity(intent);
         onDestroy();
     }
 
@@ -54,4 +54,16 @@ public class Achievement extends Activity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Intent intent = new Intent();
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            intent.setClass(this, Homepage.class);
+        }
+        finish();
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

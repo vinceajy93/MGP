@@ -3,16 +3,20 @@ package com.sidm.mgpgame;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
 
-public class Friend extends Activity implements OnClickListener {
+/**
+ * Created by Vincent's PC on 27/11/2015.
+ */
+public class Optionpage extends Activity implements View.OnClickListener {
 
     private Button btn_back;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,25 +26,28 @@ public class Friend extends Activity implements OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
 
-        setContentView(R.layout.friend);
+        setContentView(R.layout.options);
 
         btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
+
+
     }
 
     public void onClick(View v) {
         Intent intent = new Intent();
 
         if (v == btn_back) {
-            intent.setClass(this, Homepage.class);
-            startActivity(intent);
+            intent.setClass(this, Mainmenu.class);
+            finish();
         }
-
-
+        startActivity(intent);
         onDestroy();
     }
 
-    //pause
+
+
+        //pause
     protected void onPause() {
         super.onPause();
     }
@@ -54,4 +61,16 @@ public class Friend extends Activity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Intent intent = new Intent();
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            intent.setClass(this, Mainmenu.class);
+        }
+        finish();
+        return super.onKeyDown(keyCode, event);
+    }
 }
+

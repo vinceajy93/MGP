@@ -3,6 +3,7 @@ package com.sidm.mgpgame;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -53,20 +54,25 @@ public class Homepage extends Activity implements OnClickListener {
 
         if (v == btn_shop) {
             intent.setClass(this, Shop.class);
+            finish();
         } else if (v == btn_gadget) {
             intent.setClass(this, Gadget.class);
+            finish();
         } else if (v == btn_achievement) {
             intent.setClass(this, Achievement.class);
+            finish();
         } else if (v == btn_friend) {
             intent.setClass(this, Friend.class);
+            finish();
         } else if (v == btn_avatar) {
             intent.setClass(this, Avatar.class);
+            finish();
         }else if (v == btn_back) {
             intent.setClass(this, Mainmenu.class);
+            finish();
         }
-
         startActivity(intent);
-
+        onDestroy();
     }
 
     //pause
@@ -82,5 +88,16 @@ public class Homepage extends Activity implements OnClickListener {
     //destroy when not in use
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Intent intent = new Intent();
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            intent.setClass(this, Mainmenu.class);
+        }
+        finish();
+        return super.onKeyDown(keyCode, event);
     }
 }

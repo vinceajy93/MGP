@@ -18,7 +18,7 @@ import android.graphics.Paint;
 import android.widget.Switch;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
+
 
 import java.sql.SQLSyntaxErrorException;
 import java.util.Random;
@@ -59,7 +59,14 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Paint paint = new Paint();
 
     // Variable for Game State check
-    private short GameState;
+    enum GameState
+    {
+        Play,
+        Gameover,
+        Win
+    };
+
+    GameState state = GameState.Play;
 
     // Variables for touch events
     private short mX = 0, mY = 0;
@@ -94,14 +101,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     // Time to keep vibrator ON,
     // Time till vibration is OFF or till vibrator is ON
 
-    //initialise intent
-    Intent intent = new Intent();
-
     //char sprites
     //private SpriteAnimation robot_anim;
     private SpriteAnimation android_anim;
     private int translateplayerY; //for jumping
-    protected boolean isJump;
+    boolean isJump = false;
+    boolean freefall = false;
+
 
     //enemy sprites
     private SpriteAnimation enemy_anim;
@@ -204,8 +210,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         // Destroy the thread
         if (myThread.isAlive()) {
             myThread.startRun(false);
-
-
         }
         boolean retry = true;
         while (retry) {
@@ -244,7 +248,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             }
         }
 
-        if (x2 + w2 >= x1 && x2 + w2 < x1 + w1) // Start to detect collision of the bottom right
+        if (x2 + w2 >= x1 && x2 + w2 <= x1 + w1) // Start to detect collision of the bottom right
         {
             if (y2 + h2 > y1 && y2 + h2 < y1 + h1) {
                 return true;
@@ -327,7 +331,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         android_anim.draw(canvas);
         android_anim.setY(500 + translateplayerY);
 
-
         //draw enemy
         enemy_anim.draw(canvas);
         enemy_anim.setY(600);
@@ -341,19 +344,18 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         paint.setFakeBoldText(true);
         paint.setColor(Color.WHITE);
         canvas.drawText("FPS: " + FPS, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
+
         //Print score
         canvas.drawText("SCORE: " + score, ScreenWidth * 0.6f, ScreenHeight * 0.1f, paint);
 
     }
 
-
     //Update method to update the game play
     public void update(float dt, float fps) {
         FPS = (int) fps;
 
-
-        switch (GameState) {
-            case 0: {
+        switch (state) {
+            case Play: {
                 // 3) Update the background to allow panning effect
                 bgX -= 500 * dt;
 
@@ -403,57 +405,71 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     health = 0;
 
 
-                //player's jump
-                if (isJump == true) {
-                    translateplayerY -= 10;
+                if(isJump == true)
+                {
+                    translateplayerY -= 5;
+                    if(translateplayerY < -200)
+                    {
+                        //translateplayerY = 0; //reset when hit highest peak (0 acceleration)
+                        isJump= false;
+                        freefall = true;
+                    }
                 }
 
-                if (translateplayerY == -50) {
-                    translateplayerY++;
+                if(freefall == true)
+                {
+                    translateplayerY += 5;
+                    if(translateplayerY > 40)
+                    {
+                        translateplayerY = 0;
+                        freefall = false;
+                    }
                 }
 
-                //error checking if translateplayerY less than 0
-                if (translateplayerY < 0)
-                    translateplayerY = 0;
-            }
+                System.out.println(translateplayerY);
+                System.out.println("freefall " + freefall);
+                System.out.println("isjump " + isJump);
 
-            System.out.println(translateplayerY);
-            if (checkCollision(android_anim.getX(), android_anim.getY(), android_anim.getSpriteWidth(),
-                    android_anim.getSpriteHeight(),
-                    enemy_anim.getX(), enemy_anim.getY(), enemy_anim.getSpriteWidth(), enemy_anim.getSpriteHeight())) {
+                if (checkCollision(android_anim.getX(), android_anim.getY(), android_anim.getSpriteWidth(),
+                        android_anim.getSpriteHeight(),
+                        enemy_anim.getX(), enemy_anim.getY(), enemy_anim.getSpriteWidth(), enemy_anim.getSpriteHeight())) {
 
-                if (isHit == true) {
-                    invunTime = 0;
-                    health--;
-                    score -= 10;
+                    if (isHit == true) {
+                        invunTime = 0;
+                        health--;
+                        score -= 10;
 
 
-                    isHit = false;
+                        isHit = false;
 
-                    if (score <= 0)
-                        score = 0;
-                }
+                        if (score <= 0)
+                            score = 0;
+                    }
 
-                //lose
-                if (health <= 0) {
-                    //you lose
-                    //intent.setClass(,Losepage.class);
-                }
-                //win
-                if (score >= 1000) {
-                    //you win
-                    //intent.setClass(,Winpage.class);
+                    //lose
+                    if (health <= 0) {
+                        //you lose
+                        // Intent intent = new Intent();
+                        //intent.setClass(this, Losepage.class);
+                        //Intent i = new Intent().setClass(getContext(), Losepage.class);
+                       // ((Activity) getContext()).startActivity(i);
+                    }
+                    //win
+                    if (score >= 1000) {
+                        //you win
+                        //intent.setClass(,Winpage.class);
+                        //state = GameState.Win;
+                    }
                 }
             }
             break;
         }
     }
 
-
     // Rendering is done on Canvas
     public void doDraw(Canvas canvas) {
-        switch (GameState) {
-            case 0:
+        switch (state) {
+            case Play:
                 RenderGameplay(canvas);
                 break;
         }
@@ -471,34 +487,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-
-//                if (checkCollision(mX, mY, Spaceship[SpaceshipIndex].getWidth(),
-//                        Spaceship[SpaceshipIndex].getHeight(), X, Y, 0, 0)) {
-//                    moveShip = true;
-//                } else {
-//                    moveShip = false;
-//                }
-
-                //dectect if there is a touch on screen
-                if (checkCollision(0, 0, ScreenWidth, ScreenHeight, X, Y, 0, 0)) {
-                    if (translateplayerY <= 0) {
-                        isJump = true;
-                        translateplayerY -= 10;
-                        System.out.println(isJump);
-                        if (translateplayerY == 30) {
-                            isJump = false;
-                            translateplayerY += 10;
-                        }
-                    }
-
-                    //error checking if translateplayerY less than 0
-                    if (translateplayerY < 0)
-                        translateplayerY = 0;
+                if(isJump == false)
+                {
+                    isJump = true;
                 }
-
-
                 break;
             case MotionEvent.ACTION_MOVE:
+                break;
 //                if (moveShip == true) {
 //                    // New Location where the image lands on
 //                    mX = (short) (X - Spaceship[SpaceshipIndex].getWidth() / 2);

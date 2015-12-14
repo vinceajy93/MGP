@@ -12,11 +12,11 @@ import android.widget.Button;
 /**
  * Created by Vincent's PC on 27/11/2015.
  */
-public class Optionpage extends Activity implements View.OnClickListener {
+public class Losepage extends Activity implements View.OnClickListener {
 
     private Button btn_back;
-
-
+    private Button btn_nextlv;
+    private Button btn_retry;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,12 +25,16 @@ public class Optionpage extends Activity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
 
-        setContentView(R.layout.options);
+        setContentView(R.layout.losepage);
 
         btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
 
+        btn_nextlv = (Button) findViewById(R.id.btn_level2);
+        btn_nextlv.setOnClickListener(this);
 
+        btn_retry = (Button) findViewById(R.id.btn_retry);
+        btn_retry.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -38,6 +42,15 @@ public class Optionpage extends Activity implements View.OnClickListener {
 
         if (v == btn_back) {
             intent.setClass(this, Mainmenu.class);
+            finish();
+        }
+        if(v == btn_retry) {
+            intent.setClass(this,Shop.class);
+            finish();
+        }
+        if(v == btn_nextlv) {
+            intent.setClass(this,Shop.class);
+            finish();
         }
 
         startActivity(intent);
@@ -46,7 +59,7 @@ public class Optionpage extends Activity implements View.OnClickListener {
 
 
 
-        //pause
+    //pause
     protected void onPause() {
         super.onPause();
     }

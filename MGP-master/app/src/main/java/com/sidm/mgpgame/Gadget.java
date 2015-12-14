@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -36,10 +37,9 @@ public class Gadget extends Activity implements OnClickListener {
         //go back to menu page
         if (v == btn_back) {
             intent.setClass(this, Homepage.class);
-            startActivity(intent);
+            finish();
         }
-
-
+        startActivity(intent);
         onDestroy();
     }
 
@@ -65,5 +65,16 @@ public class Gadget extends Activity implements OnClickListener {
     //destroy when not in use
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Intent intent = new Intent();
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            intent.setClass(this, Homepage.class);
+        }
+        finish();
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -3,20 +3,18 @@ package com.sidm.mgpgame;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
 
-/**
- * Created by Vincent's PC on 27/11/2015.
- */
-public class Losepage extends Activity implements View.OnClickListener {
+public class Avatar extends Activity implements OnClickListener {
 
     private Button btn_back;
-    private Button btn_nextlv;
-    private Button btn_retry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,36 +23,24 @@ public class Losepage extends Activity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
 
-        setContentView(R.layout.losepage);
+        setContentView(R.layout.avatar);
 
         btn_back = (Button) findViewById(R.id.btn_level2);
         btn_back.setOnClickListener(this);
-
-        btn_nextlv = (Button) findViewById(R.id.btn_level2);
-        btn_nextlv.setOnClickListener(this);
-
-        btn_retry = (Button) findViewById(R.id.btn_retry);
-        btn_retry.setOnClickListener(this);
     }
 
     public void onClick(View v) {
         Intent intent = new Intent();
 
         if (v == btn_back) {
-            intent.setClass(this, Mainmenu.class);
+            intent.setClass(this, Homepage.class);
+            finish();
         }
-        if(v == btn_retry) {
-            intent.setClass(this,Shop.class);
-        }
-        if(v == btn_nextlv) {
-            intent.setClass(this,Shop.class);
-        }
-
         startActivity(intent);
         onDestroy();
+
+
     }
-
-
 
     //pause
     protected void onPause() {
@@ -70,5 +56,15 @@ public class Losepage extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
     }
-}
 
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Intent intent = new Intent();
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            intent.setClass(this, Homepage.class);
+        }
+        finish();
+        return super.onKeyDown(keyCode, event);
+    }
+}
