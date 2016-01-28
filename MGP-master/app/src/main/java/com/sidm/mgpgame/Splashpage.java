@@ -26,8 +26,10 @@ public class Splashpage extends Activity {
 
         final ImageView splashImageView = (ImageView) findViewById(R.id.SplashImageView);
         splashImageView.setBackgroundResource(R.drawable.loading);
-        splashImageView.setX(530);
-        splashImageView.setY(500);
+
+        splashImageView.setX(1150);
+        splashImageView.setY(1100);
+
         final AnimationDrawable frameAnimation = (AnimationDrawable)splashImageView.getBackground();
         splashImageView.post(new Runnable() {
             @Override

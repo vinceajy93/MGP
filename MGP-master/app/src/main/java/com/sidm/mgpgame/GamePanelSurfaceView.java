@@ -1,20 +1,29 @@
 package com.sidm.mgpgame;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Paint;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -50,21 +59,17 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap[] Hearts = new Bitmap[2];
 
     // 4b) Variable as an index to keep track of the spaceship images
-    private short SpaceshipIndex = 0;
-
     // Variables for FPS
     public float FPS;
-    float deltaTime;
-    long dt;
-    Paint paint = new Paint();
 
     // Variable for Game State check
-    enum GameState
-    {
+    enum GameState {
         Play,
         Gameover,
         Win
-    };
+    }
+
+    ;
 
     GameState state = GameState.Play;
 
@@ -76,7 +81,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     // Variables for Drag
     private int score = 0;
-    private boolean moveShip = false;
 
     // Variables for vibrations
     public Vibrator vibrate;
@@ -96,11 +100,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //private TextView handCash;
     private int cash = 1000;
 
-    long pattern[] = {0, 200, 500};
-    // Time to wait before vibrator is ON,
-    // Time to keep vibrator ON,
-    // Time till vibration is OFF or till vibrator is ON
-
     //char sprites
     //private SpriteAnimation robot_anim;
     private SpriteAnimation android_anim;
@@ -114,8 +113,27 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private int translateEnemyX;
     private int randEnemyTrans_spd = 10;
 
+    // BGM
+    MediaPlayer bgm;
+
+    // Sound
+    private SoundPool sounds;
+    private int soundcorrect, soundwrong;
+
+    // Pause Button
+    private boolean pausepress = false;
+    private Objects Pause1;
+    private Objects Pause2;
+
+    // Alert
+    public boolean showAlert = false;
+    AlertDialog.Builder alert = null;
+    Activity activityTracker;
+    public boolean showed = false;
+    private Alert AlertObj;
+
     protected void onCreate(Bundle savedInstanceState) {
-        Sw_vibrate = (Switch) findViewById(R.id.Sw_vibrate);
+       // Sw_vibrate = (Switch) findViewById(R.id.Sw_vibrate);
         //handCash = (TextView) findViewById(R.id.handCash);
 
         //Set the switch to ON
@@ -128,6 +146,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //initi player translate Y pos for jumping
         translateplayerY = 0;
 
+        /*
         //Attach a listener to check for changes in state
         Sw_vibrate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -139,20 +158,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     vibrate_on = false;
                 }
             }
-        });
-    }
-
-    public void startVibration() {
-        if (vibrate_on) {
-            long Pattern[] = {0, 200, 500};
-            vibrate = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-            vibrate.vibrate(pattern, 0); // sets the vibration as: REPEAT. -1 as do not repeat
-            Log.v(TAG, "Test");
-        }
-    }
-
-    public void stopVibrate() {
-        vibrate.cancel();
+        });*/
     }
 
     //constructor for this GamePanelSurfaceView class
@@ -188,6 +194,57 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         android_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(), R.drawable.char_android), 362, 82, 6, 6);
         enemy_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(), R.drawable.enemy), 234, 36, 8, 8);
 
+        bgm = MediaPlayer.create(context, R.raw.background_music);
+
+        // Define Soundpool will be used
+        sounds = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+
+        // Load audio file
+        soundcorrect = sounds.load(context, R.raw.correct, 1);
+        soundwrong = sounds.load(context, R.raw.incorrect, 1);
+
+        //Load pause button
+        Pause1 = new Objects(BitmapFactory.decodeResource(getResources(), R.drawable.pause), 200, 72);
+        Pause2 = new Objects(BitmapFactory.decodeResource(getResources(), R.drawable.pause1), 200, 72);
+
+        //Practical 13
+        // Load Shared Preferences
+        // SharePrefScore = getContext().getSharedPreferences("Scoredata", Context.MODE_PRIVATE);
+        //  editor = SharePrefScore.edit();
+        //  highscore = SharePrefScore.getInt("KeyHighscore", 0);
+
+        //Practical 9
+        //Alert Dialog
+        AlertObj = new Alert(this);
+        alert = new AlertDialog.Builder(getContext());
+
+        // Allow players to input name
+        final EditText input = new EditText(getContext());
+
+        // Define input method where 'enter' key is disabled
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        // Define max of 20 chars to be entered for 'Name' field
+        int maxLength = 20;
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(maxLength);
+        input.setFilters(FilterArray);
+
+        //set up dialog event
+        alert.setCancelable(false);
+        alert.setView(input);
+
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            // do something when the button is clicked
+            public void onClick(DialogInterface arg0, int arg1) {
+                Intent intent = new Intent();
+                // Push highscore to another activity, this is a comment.
+                // intent.putExtra("highscore", highscore);
+                intent.setClass(getContext(), Mainmenu.class);
+                activityTracker.startActivity(intent);
+            }
+        });
+
 
         // Create the game loop thread
         myThread = new GameThread(getHolder(), this);
@@ -204,6 +261,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             myThread.startRun(true);
             myThread.start();
         }
+
+        //Play background music
+        bgm.setVolume(0.8f, 0.8f);
+        bgm.start();
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -219,6 +280,15 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             } catch (InterruptedException e) {
             }
         }
+
+        // End background music
+        bgm.stop();
+        bgm.release();
+
+        // End audio file
+        sounds.unload(soundcorrect);
+        sounds.unload(soundwrong);
+        sounds.release();
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -228,7 +298,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     public boolean checkCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
         if (x2 >= x1 && x2 <= x1 + w1) // Start to detect collision of the top left corner
         {
-            if (y2 > y1 && y2 < y1 + h1) //  Comparing yellow box to blue box
+            if (y2 >= y1 && y2 <= y1 + h1) //  Comparing yellow box to blue box
             {
                 return true;
             }
@@ -236,26 +306,39 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         if (x2 + w2 >= x1 && x2 + w2 <= x1 + w1) // Start to detect collision of the top right corner
         {
-            if (y2 > y1 && y2 < y1 + h1) {
+            if (y2 >= y1 && y2 <= y1 + h1) {
                 return true;
             }
         }
 
-        if (x2 >= x1 && x2 < x1 + w1) // Start to detect collision of the bottom left
+        if (x2 >= x1 && x2 <= x1 + w1) // Start to detect collision of the bottom left
         {
-            if (y2 + h2 > y1 && y2 + h2 < y1 + h1) {
+            if (y2 + h2 >= y1 && y2 + h2 <= y1 + h1) {
                 return true;
             }
         }
 
         if (x2 + w2 >= x1 && x2 + w2 <= x1 + w1) // Start to detect collision of the bottom right
         {
-            if (y2 + h2 > y1 && y2 + h2 < y1 + h1) {
+            if (y2 + h2 >= y1 && y2 + h2 <= y1 + h1) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public void startVibration() {
+        //if (vibrate_on) {
+            long Pattern[] = {0, 200, 500};
+            vibrate = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+            vibrate.vibrate(Pattern, -1); // sets the vibration as: REPEAT. -1 as do not repeat
+            Log.v(TAG, "Test");
+        //}
+    }
+
+    public void stopVibrate() {
+        vibrate.cancel();
     }
 
     public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
@@ -321,8 +404,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
                 break;
         }
-
-
         //draw char
         // robot_anim.draw(canvas);
         // robot_anim.setY(600);
@@ -348,6 +429,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Print score
         canvas.drawText("SCORE: " + score, ScreenWidth * 0.6f, ScreenHeight * 0.1f, paint);
 
+        //Render the pause option
+        RenderPause(canvas);
     }
 
     //Update method to update the game play
@@ -366,10 +449,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 //brief invulnerability after hit
                 invunTime++;
-
-                // 4e) Update the spaceship images / shipIndex so that the animation will occur.
-                SpaceshipIndex++; //edit according to what you need
-                SpaceshipIndex %= 4;
 
                 //robot_anim.update(System.currentTimeMillis());
                 android_anim.update(System.currentTimeMillis());
@@ -393,7 +472,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         randEnemyTrans_spd = rn.nextInt(400) + 100;
                     }
 
-
                     score += 10;
                 }
 
@@ -405,22 +483,18 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     health = 0;
 
 
-                if(isJump == true)
-                {
+                if (isJump == true) {
                     translateplayerY -= 5;
-                    if(translateplayerY < -200)
-                    {
+                    if (translateplayerY < -200) {
                         //translateplayerY = 0; //reset when hit highest peak (0 acceleration)
-                        isJump= false;
+                        isJump = false;
                         freefall = true;
                     }
                 }
 
-                if(freefall == true)
-                {
+                if (freefall == true) {
                     translateplayerY += 5;
-                    if(translateplayerY > 40)
-                    {
+                    if (translateplayerY > 40) {
                         translateplayerY = 0;
                         freefall = false;
                     }
@@ -452,7 +526,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         // Intent intent = new Intent();
                         //intent.setClass(this, Losepage.class);
                         //Intent i = new Intent().setClass(getContext(), Losepage.class);
-                       // ((Activity) getContext()).startActivity(i);
+                        // ((Activity) getContext()).startActivity(i);
                     }
                     //win
                     if (score >= 1000) {
@@ -463,6 +537,24 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 }
             }
             break;
+        }
+
+        if (showAlert == true && !showed) {
+            showed = true;
+            alert.setMessage("Game Over");
+            AlertObj.RunAlert();
+            showAlert = false;
+            showed = false;
+        }
+
+    }
+
+    public void RenderPause(Canvas canvas) {
+        // Draw the pause button
+        if (pausepress == true) {
+            canvas.drawBitmap(Pause2.getBitmap(), Pause2.getX(), Pause2.getY(), null);
+        } else if (pausepress == false) {
+            canvas.drawBitmap(Pause1.getBitmap(), Pause1.getX(), Pause1.getY(), null);
         }
     }
 
@@ -487,10 +579,29 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if(isJump == false)
-                {
-                    isJump = true;
+                // check if player presses the pause button
+                if (checkCollision(Pause1.getX(), Pause1.getY(), Pause1.getWidth(), Pause1.getHeight(), X, Y, 0, 0)) {
+                    if (!pausepress) {
+                        pausepress = true;
+                        myThread.pause();
+                        bgm.pause();
+
+                    } else {
+                        pausepress = false;
+                        myThread.unPause();
+                        bgm.start();
+                    }
+
+                    startVibration();
                 }
+
+                // if game is not paused
+                if (pausepress == false) {
+                    if (isJump == false) {
+                        isJump = true;
+                    }
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
@@ -500,7 +611,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 //                    mY = (short) (X - Spaceship[SpaceshipIndex].getHeight() / 2);
 //                }
 
-                //check if stone and ship collide
+            //check if stone and ship collide
                 /*if (checkCollision(mX, mY, Spaceship[SpaceshipIndex].getWidth(),
                         Spaceship[SpaceshipIndex].getHeight(),
                         aX, aY, android_anim.getSpriteWidth(), android_anim.getSpriteHeight())) {
@@ -510,6 +621,25 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     // score += 10;
                     //health -= 1;
 
+                    sounds.play(soundwrong, 1.0f, 1.0f, 0, 0, 1.5f);
+                    startVibration();
+
+                    Lives--;
+                    Score += 10;
+
+                    if (Lives == 0) {
+                        EndLevel();
+                        //showAlert = true;
+
+                        //Sharedpreferences mode
+                        // if (scoreno > highscore)
+                        //{
+                        // must put in "KeyHighscore" since it's initialised as KeyHighscore
+                        //editor.putInt("KeyHighscore", highscore); // stores information to scoreboard
+                        //editor.clear() // clears all information in game, flushes the information. do not uncomment, this is just information
+                        //editor.commit(); // stores the information
+                        // }
+                    }
 
                     // if (hits == 3)
                     //  {
@@ -534,7 +664,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
         return true;
-        // return super.onTouchEvent(event);
     }
 }
 
