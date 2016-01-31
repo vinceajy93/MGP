@@ -14,23 +14,19 @@ import android.graphics.Matrix;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Paint;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 
-import java.sql.SQLSyntaxErrorException;
 import java.util.Random;
 
 /**
@@ -62,6 +58,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap[] Hearts = new Bitmap[2];
 
     // 4b) Variable as an index to keep track of the spaceship images
+
     // Variables for FPS
     public float FPS;
 
@@ -74,7 +71,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     GameState state = GameState.Play;
 
-    // Variables for Drag
+    // Variables for score
     private int score = 0;
 
     // Variables for vibrations
@@ -83,7 +80,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //variables for gameplay
     private int health = 3;
 
-    //variable for invulnerability tiem
+    //variable for invulnerability time
     private boolean isHit = false;
     protected int invunTime = 50; //in milli seconds
 
@@ -94,6 +91,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //char sprites
     //private SpriteAnimation robot_anim;
     private SpriteAnimation android_anim;
+
+
     private int translateplayerY = 0; //for jumping
     boolean isJump = false;
     boolean freefall = false;
@@ -109,6 +108,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     // Sound
     private SoundPool sounds;
     private int soundjump, soundhit;
+
+    //for sound checks
+    private boolean isJumpSound;
+
 
     // Pause Button
     private boolean pausepress = false;
@@ -133,6 +136,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     SharedPreferences.Editor editorN;
     String playerName;
 
+    //switch for vibration
+     Switch sw_vibrate;
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context) {
@@ -177,9 +182,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         soundjump = sounds.load(context, R.raw.jump, 1);
         soundhit = sounds.load(context, R.raw.hit, 1);
 
+        //init the sound checks
+        isJumpSound = true;
+
         //Load pause button
         Pause1 = new Objects(BitmapFactory.decodeResource(getResources(), R.drawable.pause), 200, 72);
         Pause2 = new Objects(BitmapFactory.decodeResource(getResources(), R.drawable.pause1), 200, 72);
+
+        //init the switch
+        sw_vibrate = (Switch)findViewById(R.id.switch_vibrate);
+       // sw_vibrate.setOnCheckedChangeListener(this);
 
         //Practical 13
         // Load Shared Preferences
@@ -275,6 +287,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         sounds.release();
     }
 
+//@Override
+//    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+//    {
+//        if(isChecked){
+//            System.out.println("switch is on");
+//        }else{
+//            System.out.println("switch is off");
+//        }
+//    }
+
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
     }
@@ -358,41 +380,45 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Draw the hearts
         switch (health) {
+            //full health
             case 3:
-                canvas.drawBitmap(Hearts[1], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
-                canvas.drawBitmap(Hearts[1], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
-                canvas.drawBitmap(Hearts[1], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                canvas.drawBitmap(Hearts[1], android_anim.getX() - 24.5f, android_anim.getY() - 50.f, null); //left
+                canvas.drawBitmap(Hearts[1], android_anim.getX() + 15.5f, android_anim.getY() - 50.f, null); //middle
+                canvas.drawBitmap(Hearts[1], android_anim.getX() + 55.5f, android_anim.getY() - 50.f, null); //right
                 break;
-
+            //2 health left
             case 2:
-                canvas.drawBitmap(Hearts[1], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
-                canvas.drawBitmap(Hearts[1], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
-                canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                canvas.drawBitmap(Hearts[1], android_anim.getX() - 24.5f, android_anim.getY() - 50.f, null); //left
+                canvas.drawBitmap(Hearts[1], android_anim.getX() + 15.5f, android_anim.getY() - 50.f, null); //middle
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 55.5f, android_anim.getY() - 50.f, null); //right
                 break;
-
+            //1 health left
             case 1:
-                canvas.drawBitmap(Hearts[1], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
-                canvas.drawBitmap(Hearts[0], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
-                canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                canvas.drawBitmap(Hearts[1], android_anim.getX() - 24.5f, android_anim.getY() - 50.f, null); //left
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 15.5f, android_anim.getY() - 50.f, null); //middle
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 55.5f, android_anim.getY() - 50.f, null); //right
                 break;
-
+            //dead, changed to lose page
             case 0:
-                canvas.drawBitmap(Hearts[0], android_anim.getX() - 20f, android_anim.getY() - (ScreenHeight * 0.015f), null); //left
-                canvas.drawBitmap(Hearts[0], android_anim.getX() + 35f, android_anim.getY() - (ScreenHeight * 0.015f), null); //middle
-                canvas.drawBitmap(Hearts[0], android_anim.getX() + 90f, android_anim.getY() - (ScreenHeight * 0.015f), null); //right
+                canvas.drawBitmap(Hearts[0], android_anim.getX() - 24.5f, android_anim.getY() - 50.f, null); //left
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 15.5f, android_anim.getY() - 50.f, null); //middle
+                canvas.drawBitmap(Hearts[0], android_anim.getX() + 55.5f, android_anim.getY() - 50.f, null); //right
                 break;
         }
 
-        float YPos = ScreenHeight * 0.75f;
+        //init the position of the player
+        float PlayerInitYPos = ScreenHeight * 0.85f;
+        //init the position of the enemy
         float EnemyYPos = ScreenHeight * 0.85f;
 
         //draw char android
         android_anim.draw(canvas);
-        android_anim.setY((int) YPos + translateplayerY);
+        //translate the android_anim during update
+        android_anim.setY((int) PlayerInitYPos + translateplayerY);
 
         //draw enemy
         enemy_anim.draw(canvas);
-        //enemy_anim.setY(600);
+        //set the position of the enemy during update
         enemy_anim.setY((int)EnemyYPos);
         enemy_anim.setX(translateEnemyX);
 
@@ -403,18 +429,19 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         paint.setTextSize(50);
         paint.setFakeBoldText(true);
         paint.setColor(Color.WHITE);
-        canvas.drawText("FPS: " + enemy_anim.getY() + "::" + android_anim.getY(), ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
+       // canvas.drawText("TranslateY" + translateplayerY, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
+        canvas.drawText("ishit" + isHit, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
 
         //Print score
         canvas.drawText("SCORE: " + score, ScreenWidth * 0.6f, ScreenHeight * 0.1f, paint);
 
-        if (collided == true) {
-            Paint collide = new Paint();
-            collide.setARGB(255, 0, 0, 0);
-            collide.setStrokeWidth(100);
-            collide.setTextSize(30);
-            canvas.drawText("Collided ", 130, 45, paint);
-        }
+//        if (collided == true) {
+//            Paint collide = new Paint();
+//            collide.setARGB(255, 0, 0, 0);
+//            collide.setStrokeWidth(100);
+//            collide.setTextSize(30);
+//            canvas.drawText("Collided ", 130, 45, paint);
+//        }
 
 
 
@@ -439,32 +466,45 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 //brief invulnerability after hit
                 if(isHit == true)
                 {
+                    //increment the invulnerability timer
                     invunTime++;
                 }
 
+                //if invulnerability is more than .5sec and player is not in collision
                 if (invunTime >= 50 && isHit == false) {
-                    isHit = true;
+                    //isHit = true;
                 }
 
+                //set health at 0 if its less than 0
                 if (health <= 0) {
                     health = 0;
                 }
 
                 if (isJump == true) {
+                    //player is jumping (screen touched)
                     translateplayerY -= 5;
 
-                    sounds.play(soundjump, 1.0f, 1.0f, 0, 0, 1.5f);
+                    if(isJumpSound)
+                    {
+                        sounds.play(soundjump, 1.0f, 1.0f, 0, 0, 1.5f);
+                        isJumpSound = false;
+                    }
 
-                    if (translateplayerY < -200) {
+
+                    if (translateplayerY < -120) {
                         //translateplayerY = 0; //reset when hit highest peak (0 acceleration)
                         isJump = false;
+                        isJumpSound = true;
                         freefall = true;
                     }
                 }
 
                 if (freefall == true) {
-                    translateplayerY += 5;
-                    if (translateplayerY > 40) {
+
+                    if (translateplayerY < 20) {
+                        translateplayerY += 5;
+                    }
+                    else {
                         translateplayerY = 0;
                         freefall = false;
                     }
@@ -472,15 +512,22 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 //update enemy to move left per sec
                 //enemy_anim.setX(translateEnemyX -= 5);
-
                 translateEnemyX -= 5;
 
+                //reset the enemy back to the right side of the screen
+
                 if (translateEnemyX < 0) {
+                    //increase score if enemy passed the player
+                    if(enemy_anim.getX() < android_anim.getX())
+                    {
+                        score+=10;
+                    }
                     translateEnemyX = ScreenWidth - randEnemyTrans_spd;
 
                     Random rn = new Random();
 
                     randEnemyTrans_spd = rn.nextInt(20) + 10;
+
                     //Difficulty level
                     if (score >= 50 && score < 100) {
                         randEnemyTrans_spd = rn.nextInt(100) + 30;
@@ -490,16 +537,53 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         randEnemyTrans_spd = rn.nextInt(400) + 100;
                     }
 
-                    score += 10;
+
+
                 }
 
+                if (checkCollision(android_anim.getX(), android_anim.getY(), android_anim.getSpriteWidth(),
+                        android_anim.getSpriteHeight(),
+                        enemy_anim.getX(), enemy_anim.getY(), enemy_anim.getSpriteWidth(), enemy_anim.getSpriteHeight())) {
+
+                    //if player collided with enemy
+                    isHit = true;
+                    collided = true;
+
+                    if (isHit == true) {
+                        invunTime = 0;
+                        health--;
+                        score -= 10;
+
+                        //reset isHit boolean
+                        isHit = false;
+
+                        //score cannot be lower than 0
+                        if (score <= 0)
+                            score = 0;
+                    }
+
+                   //sounds.play(soundhit, 1.0f, 1.0f, 0, 0, 1.5f);
+
+                    //lose
+                    if (health <= 0) {
+                        //you lose
+                        // Intent intent = new Intent();
+                        //intent.setClass(this, Losepage.class);
+                        //Intent i = new Intent().setClass(getContext(), Losepage.class);
+                        // ((Activity) getContext()).startActivity(i);
+                    }
+                    //win
+                    if (score >= 1000) {
+                        //you win
+                        //intent.setClass(,Winpage.class);
+                        //state = GameState.Win;
+                    }
+                }
                 //robot_anim.update(System.currentTimeMillis());
                 android_anim.update(System.currentTimeMillis());
                 enemy_anim.update(System.currentTimeMillis());
 
                 System.out.println(translateplayerY);
-                System.out.println("freefall " + freefall);
-                System.out.println("isjump " + isJump);
 
             }
             break;
@@ -553,7 +637,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 if (checkCollision(Pause1.getX(), Pause1.getY(), Pause1.getWidth(), Pause1.getHeight(), X, Y, 0, 0)) {
                     if (!pausepress) {
                         pausepress = true;
-                        isJump = false;
+                        //isJump = false;
                         myThread.pause();
                         bgm.pause();
                     } else {
@@ -563,63 +647,18 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     }
 
                     startVibration();
-                }
-
-                if (checkCollision(android_anim.getX(), android_anim.getY(), android_anim.getSpriteWidth(),
-                        android_anim.getSpriteHeight(),
-                        enemy_anim.getX(), enemy_anim.getY(), enemy_anim.getSpriteWidth(), enemy_anim.getSpriteHeight())) {
-
-                    isHit = true;
-                    collided = true;
-
-                    if (isHit == true) {
-                        invunTime = 0;
-                        health--;
-                        score -= 10;
-
-                        isHit = false;
-
-                        if (score <= 0)
-                            score = 0;
+                } else {
+                    // if game is not paused
+                    //if (pausepress == false) {
+                        if (isJump == false) {
+                            isJump = true;
+                    } else {
+                        collided = false;
                     }
-
-                    sounds.play(soundhit, 1.0f, 1.0f, 0, 0, 1.5f);
-
-                    //lose
-                    if (health <= 0) {
-                        //you lose
-                        // Intent intent = new Intent();
-                        //intent.setClass(this, Losepage.class);
-                        //Intent i = new Intent().setClass(getContext(), Losepage.class);
-                        // ((Activity) getContext()).startActivity(i);
-                    }
-                    //win
-                    if (score >= 1000) {
-                        //you win
-                        //intent.setClass(,Winpage.class);
-                        //state = GameState.Win;
-                    }
-                }
-
-                // if game is not paused
-                if (pausepress == false) {
-                    if (isJump == false) {
-                        isJump = true;
-                    }
-                    else {
-                        isJump = false;
-                    }
-                }
-
-
-                else {
-                    collided = false;
                 }
 
                 break;
             case MotionEvent.ACTION_MOVE:
-
-
                 break;
 //                if (moveShip == true) {
 //                    // New Location where the image lands on

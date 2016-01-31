@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,6 +16,9 @@ public class Splashpage extends Activity {
     protected boolean _active = true;
     protected int _splashTime = 5000; // in mili seconds
 
+    //screensize
+    int ScreenWidth;
+    int ScreenHeight;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +31,14 @@ public class Splashpage extends Activity {
         final ImageView splashImageView = (ImageView) findViewById(R.id.SplashImageView);
         splashImageView.setBackgroundResource(R.drawable.loading);
 
-        splashImageView.setX(1150);
-        splashImageView.setY(1100);
+        // 1d) Set information to get screen size
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        ScreenWidth = metrics.widthPixels;
+        ScreenHeight = metrics.heightPixels;
+
+        //set the loading animation
+        splashImageView.setX(ScreenWidth * .425f);
+        splashImageView.setY(ScreenHeight *.8f);
 
         final AnimationDrawable frameAnimation = (AnimationDrawable)splashImageView.getBackground();
         splashImageView.post(new Runnable() {

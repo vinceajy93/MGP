@@ -23,7 +23,8 @@ public class SpriteAnimation extends Activity{
     private int spriteHeight; // the height of the sprite
     private int x; // the X coordinate of the object (top left of the image)
     private int y; // the Y coordinate of the object (top left of the image)
-
+    private float fx; // float coord of object for x
+    private float fy;
 
 
     public SpriteAnimation(Bitmap bitmap, int x, int y, int fps, int frameCount)
@@ -31,6 +32,8 @@ public class SpriteAnimation extends Activity{
         this.bitmap = bitmap;
         this.x = x;
         this.y = y;
+        this.fx = x;
+        this.fy = y;
 
         currentFrame = 0;
 
@@ -132,6 +135,9 @@ public class SpriteAnimation extends Activity{
         this.y= y;
     }
 
+//    public void setY(float y) {this.fy = y;}
+//
+//    public void SetX(float x) {this.fx = x;}
 
     public void update(long gameTime)       // gameTime= system time from the thread  which is running
     {
