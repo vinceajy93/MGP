@@ -509,7 +509,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 }
 
                 //brief invulnerability after hit
-                if(isHit == true)
+                if(isHit == false)
                 {
                     //increment the invulnerability timer
                     invunTime++;
@@ -520,6 +520,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     isHit = true;
                 }
 
+                System.out.println("invuntime" + invunTime);
                 //set health at 0 if its less than 0
                 if (health <= 0) {
                     health = 0;
@@ -591,23 +592,24 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         enemy_anim.getX(), enemy_anim.getY(), enemy_anim.getSpriteWidth(), enemy_anim.getSpriteHeight())) {
 
                     //if player collided with enemy
-                    isHit = true;
+                    //isHit = true;
                     collided = true;
 
                     if (isHit == true) {
+                        //reset isHit boolean
+                        isHit = false;
                         invunTime = 0;
                         health--;
                         score -= 10;
 
-                        //reset isHit boolean
-                        isHit = false;
+                        sounds.play(soundhit, 1.0f, 1.0f, 0, 0, 1.5f);
 
                         //score cannot be lower than 0
                         if (score <= 0)
                             score = 0;
                     }
 
-                   //sounds.play(soundhit, 1.0f, 1.0f, 0, 0, 1.5f);
+
 
                     //lose
                     if (health <= 0) {
@@ -630,8 +632,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 System.out.println(translateplayerY);
 
+                break;
             }
-            break;
+
         }
 
         if (showAlert == true && !showed) {
