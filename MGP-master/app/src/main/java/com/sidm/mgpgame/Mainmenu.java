@@ -32,6 +32,8 @@ public class Mainmenu extends Activity implements View.OnClickListener {
 
         btn_options = (Button) findViewById(R.id.btn_options);
         btn_options.setOnClickListener(this);
+
+
     }
 
     public void onClick(View v) {

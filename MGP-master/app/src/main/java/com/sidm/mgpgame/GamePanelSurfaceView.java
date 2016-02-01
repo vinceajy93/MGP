@@ -11,6 +11,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -22,9 +26,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Paint;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
 
 
 import java.util.Random;
@@ -34,11 +36,17 @@ import java.util.Random;
  */
 
 
-public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.Callback,SensorEventListener {
     // Implement this interface to receive information about changes to the surface.
 
     private GameThread myThread = null; // Thread to control the rendering
     protected static final String TAG = null;
+
+    //for accelerator
+    private final SensorManager sensor;
+    //array to store sensor vales
+    private float[ ] values = {0,0,0};
+    private long lastTime = System.currentTimeMillis();
 
     // 1a) Variables used for background rendering
     private Bitmap bg, scaledbg;
@@ -136,14 +144,20 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     SharedPreferences.Editor editorN;
     String playerName;
 
-    //switch for vibration
-     Switch sw_vibrate;
-
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context) {
 
+
+
         // Context is the current state of the application/object
         super(context);
+
+        //for accelerometer
+        sensor = (SensorManager)
+                getContext().getSystemService(Context.SENSOR_SERVICE);
+        sensor.registerListener(this,
+                sensor.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0),
+                SensorManager.SENSOR_DELAY_NORMAL);
 
         // Adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
@@ -189,11 +203,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         Pause1 = new Objects(BitmapFactory.decodeResource(getResources(), R.drawable.pause), 200, 72);
         Pause2 = new Objects(BitmapFactory.decodeResource(getResources(), R.drawable.pause1), 200, 72);
 
-        //init the switch
-        sw_vibrate = (Switch)findViewById(R.id.switch_vibrate);
-       // sw_vibrate.setOnCheckedChangeListener(this);
 
-        //Practical 13
+    //Practical 13
         // Load Shared Preferences
         SharePrefScore = getContext().getSharedPreferences("Scoredata", Context.MODE_PRIVATE);
         editor = SharePrefScore.edit();
@@ -249,6 +260,49 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         setFocusable(true);
     }
 
+    public void SensorMove(){
+        // Temp Variables
+        float tempX, tempY;
+
+        // bX and bY are variables used for moving the object
+        // values [1] – sensor values for x axis
+        // values [0] – sensor values for y axis
+
+        tempX = android_anim.getX() + (values[1] * ((System.currentTimeMillis() - lastTime)/1000 ));
+        tempY = android_anim.getY() + (values[0] * ((System.currentTimeMillis() - lastTime)/1000 ));
+
+
+        // Check if the ball is going out of screen along the x-axis
+        if (tempX <= android_anim.getSpriteWidth()/2 || tempX >= ScreenWidth - android_anim.getSpriteWidth()/2)
+        {
+        // Check if ball is still within screen along the y-axis
+            if ( tempY > android_anim.getSpriteHeight()/2 && tempY < ScreenHeight - android_anim.getSpriteHeight()/2) {
+                android_anim.setY((int)tempY); //<-- casted float to inti makes it jerky, needs to change
+            }
+        }
+
+        // If not, both axis of the ball's position is still within screen
+        else
+        {
+        // Move the ball with frame independant movement
+            android_anim.setX((int)tempX);
+            android_anim.setY((int)tempY);
+        }
+    }
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    // Do something here if sensor accuracy changes.
+    }
+    @Override
+    public void onSensorChanged(SensorEvent SenseEvent) {
+    // Many sensors return 3 values, one for each axis
+    // Do something with this sensor value.
+        values = SenseEvent.values;
+        //SensorMove(); <--- not using this to move the player no more
+    }
+
     //must implement inherited abstract methods
     public void surfaceCreated(SurfaceHolder holder) {
         // Create the thread
@@ -287,15 +341,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         sounds.release();
     }
 
-//@Override
-//    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-//    {
-//        if(isChecked){
-//            System.out.println("switch is on");
-//        }else{
-//            System.out.println("switch is off");
-//        }
-//    }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 

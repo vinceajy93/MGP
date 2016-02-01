@@ -1,7 +1,13 @@
 package com.sidm.mgpgame;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -11,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 
-public class Homepage extends Activity implements OnClickListener {
+public class Homepage extends Activity implements OnClickListener, SensorEventListener {
 
     private Button btn_shop;
     private Button btn_gadget;
@@ -19,6 +25,11 @@ public class Homepage extends Activity implements OnClickListener {
     private Button btn_friend;
     private Button btn_avatar;
     private Button btn_back;
+
+    //private final SensorManager sensor;
+
+    //for fun with accelerometer sprite
+    private SpriteAnimation forFun_anim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,14 @@ public class Homepage extends Activity implements OnClickListener {
 
         btn_back = (Button) findViewById(R.id.btn_back);
         btn_back.setOnClickListener(this);
+
+        forFun_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(), R.drawable.forfun), 362, 200, 6, 6);
+//        sensor = (SensorManager)
+//                getContext().getSystemService(Context.SENSOR_SERVICE);
+//        sensor.registerListener(this,
+//                sensor.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0),
+//                SensorManager.SENSOR_DELAY_NORMAL);
+
     }
 
     public void onClick(View v) {
@@ -73,6 +92,17 @@ public class Homepage extends Activity implements OnClickListener {
         }
         startActivity(intent);
         onDestroy();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    // Do something here if sensor accuracy changes.
+
+    }
+    @Override
+    public void onSensorChanged(SensorEvent SenseEvent) {
+    // Many sensors return 3 values, one for each axis.
+    // Do something with this sensor value.
     }
 
     //pause
