@@ -517,7 +517,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 //if invulnerability is more than .5sec and player is not in collision
                 if (invunTime >= 50 && isHit == false) {
-                    //isHit = true;
+                    isHit = true;
                 }
 
                 //set health at 0 if its less than 0

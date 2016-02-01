@@ -14,10 +14,38 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@drawable/button_back"
-        android:layout_marginBottom="18dp"
-        android:layout_marginStart="23dp"
+        android:layout_above="@+id/fb_login_button"
+        android:layout_centerHorizontal="true" />
+
+    <com.facebook.login.widget.ProfilePictureView
+        android:layout_height="200sp"
+        android:layout_width="200sp"
+        android:layout_gravity="center"
+        android:id="@+id/picture"
+        android:layout_above="@+id/btn_level2"
+        android:layout_alignStart="@+id/user_name" />
+
+    <com.facebook.login.widget.LoginButton
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fb_login_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
+    <!--<Button-->
+        <!--android:background="@drawable/fbicon"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:id="@+id/btn_FB"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/user_name"
+        android:textSize="18sp"
+        android:layout_margin="10dp"/>
 
 </RelativeLayout>
