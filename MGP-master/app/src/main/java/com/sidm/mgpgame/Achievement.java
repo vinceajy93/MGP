@@ -1,44 +1,35 @@
 package com.sidm.mgpgame;
 
+
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.TextView;
 
-
-public class Achievement extends Activity implements OnClickListener {
-
-    private Button btn_back;
-
+public class Achievement extends Activity
+{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);// hide title
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar, fullscreen
+
+        setContentView(R.layout.scorepage);//.xml
 
 
-        setContentView(R.layout.achievement);
+        TextView scoreText;
+        scoreText = (TextView)findViewById(R.id.scoreText);
 
-        btn_back = (Button) findViewById(R.id.btn_level2);
-        btn_back.setOnClickListener(this);
+        Bundle bundle = getIntent().getExtras();
+        String score = bundle.getString("highscore");
+
+        scoreText.setText(score);
+
     }
 
-    public void onClick(View v) {
-        Intent intent = new Intent();
-
-        if (v == btn_back) {
-            intent.setClass(this, Homepage.class);
-            finish();
-        }
-        startActivity(intent);
-        onDestroy();
-    }
 
     //pause
     protected void onPause() {
@@ -54,16 +45,6 @@ public class Achievement extends Activity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
     }
-
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        Intent intent = new Intent();
-        if(keyCode == KeyEvent.KEYCODE_BACK)
-        {
-            intent.setClass(this, Homepage.class);
-        }
-        finish();
-        return super.onKeyDown(keyCode, event);
-    }
-
 }
+
+

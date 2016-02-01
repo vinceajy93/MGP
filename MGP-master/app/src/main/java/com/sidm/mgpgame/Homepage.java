@@ -1,8 +1,11 @@
 package com.sidm.mgpgame;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 public class Homepage extends Activity implements OnClickListener, SensorEventListener {
@@ -25,6 +29,10 @@ public class Homepage extends Activity implements OnClickListener, SensorEventLi
     private Button btn_friend;
     private Button btn_avatar;
     private Button btn_back;
+
+    SharedPreferences SharePrefScore;
+    SharedPreferences SharePrefName;
+    AlertDialog.Builder alert_score = null;
 
     //private final SensorManager sensor;
 
@@ -70,39 +78,83 @@ public class Homepage extends Activity implements OnClickListener, SensorEventLi
 
     public void onClick(View v) {
         Intent intent = new Intent();
+        alertDialog_highscore();
 
-        if (v == btn_shop) {
-            intent.setClass(this, Shop.class);
-            finish();
-        } else if (v == btn_gadget) {
-            intent.setClass(this, Gadget.class);
-            finish();
-        } else if (v == btn_achievement) {
-            intent.setClass(this, Achievement.class);
-            finish();
-        } else if (v == btn_friend) {
-            intent.setClass(this, Friend.class);
-            finish();
-        } else if (v == btn_avatar) {
-            intent.setClass(this, Avatar.class);
-            finish();
-        }else if (v == btn_back) {
-            intent.setClass(this, Mainmenu.class);
-            finish();
+        if (v != btn_achievement) {
+            if (v == btn_shop) {
+                intent.setClass(this, Shop.class);
+                finish();
+            } else if (v == btn_gadget) {
+                intent.setClass(this, Gadget.class);
+                finish();
+            } else if (v == btn_achievement) {
+                intent.setClass(this, Achievement.class);
+                finish();
+            } else if (v == btn_friend) {
+                intent.setClass(this, Friend.class);
+                finish();
+            } else if (v == btn_avatar) {
+                intent.setClass(this, Avatar.class);
+                finish();
+            } else if (v == btn_back) {
+                intent.setClass(this, Mainmenu.class);
+                finish();
+            }
+            startActivity(intent);
+            onDestroy();
+        } else {
+            loadHighscore();
+            alert_score.show();
         }
-        startActivity(intent);
-        onDestroy();
+    }
+
+    public void loadHighscore() {
+        int highscore = 0;
+
+        // Load Shared Preferences
+        SharePrefScore =
+                getSharedPreferences("Scoredata", Context.MODE_PRIVATE);
+
+        highscore = SharePrefScore.getInt("KeyHighscore", 0);
+
+        //load text, "Highscore: " is just a title
+        Toast.makeText(this, "Highscore: " + highscore, Toast.LENGTH_LONG).show();
+    }
+
+    public void alertDialog_highscore() {
+        int highscore = 0;
+        String PlayerName;
+
+        // Load Shared Preferences
+        SharePrefScore = getSharedPreferences("Scoredata", Context.MODE_PRIVATE);
+        highscore = SharePrefScore.getInt("KeyHighscore", 0);
+
+        SharePrefName = getSharedPreferences("playerName", Context.MODE_PRIVATE);
+        PlayerName = SharePrefName.getString("KeyPlayerName", "DEFAULT");
+
+        alert_score = new AlertDialog.Builder(this);
+        alert_score.setCancelable(false);
+        alert_score.setIcon(R.drawable.button_achievements);
+        alert_score.setTitle("Your Highscore: ").setMessage(PlayerName + ": " +
+                highscore).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            // do something when the button is clicked
+
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+
+        });
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    // Do something here if sensor accuracy changes.
-
+        // Do something here if sensor accuracy changes.
     }
+
     @Override
     public void onSensorChanged(SensorEvent SenseEvent) {
-    // Many sensors return 3 values, one for each axis.
-    // Do something with this sensor value.
+        // Many sensors return 3 values, one for each axis.
+        // Do something with this sensor value.
     }
 
     //pause
@@ -120,11 +172,9 @@ public class Homepage extends Activity implements OnClickListener, SensorEventLi
         super.onDestroy();
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         Intent intent = new Intent();
-        if(keyCode == KeyEvent.KEYCODE_BACK)
-        {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             intent.setClass(this, Mainmenu.class);
         }
         finish();

@@ -24,7 +24,7 @@ public class Gamepage extends Activity{
 
         //set our GamePanelSufaceview as the view
 
-        setContentView(new GamePanelSurfaceView(this));
+        setContentView(new GamePanelSurfaceView(this, this));
 
     }
 
