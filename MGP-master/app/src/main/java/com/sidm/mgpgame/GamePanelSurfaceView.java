@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,13 +27,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Paint;
 import android.widget.EditText;
-
-
 import java.util.Random;
-
-/**
- * Created by 144116C on 11/23/2015.
- */
 
 
 public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.Callback,SensorEventListener {
@@ -69,8 +62,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     // Variable for Game State check
     enum GameState {
         Play,
-        Gameover,
-        Win
     }
 
     GameState state = GameState.Play;
@@ -94,7 +85,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     //char sprites
     private SpriteAnimation android_anim;
-
 
     private int translateplayerY = 0; //for jumping
     boolean isJump = false;
@@ -126,6 +116,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Activity activityTracker;
     public boolean showed = false;
     private Alert AlertObj;
+
+    //for alert testing
+    private int AlertTimer;
+
 
     //Practical 13
     // High Score
@@ -219,6 +213,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //set up dialog event
         alert.setCancelable(false);
         alert.setView(input);
+
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             // do something when the button is clicked
             public void onClick(DialogInterface arg0, int arg1) {
@@ -228,7 +223,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 Intent intent = new Intent();
                 intent.putExtra("highscore", highscore);
-                intent.setClass(getContext(), Mainmenu.class);
+                intent.setClass(getContext(), Homepage.class);
                 activityTracker.startActivity(intent);
             }
         });
@@ -240,44 +235,39 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         setFocusable(true);
     }
 
-    public void SensorMove(){
+    public void SensorMove() {
         // Temp Variables
         float tempX, tempY;
 
-        // bX and bY are variables used for moving the object
-        // values [1] – sensor values for x axis
-        // values [0] – sensor values for y axis
-
-        tempX = android_anim.getX() + (values[1] * ((System.currentTimeMillis() - lastTime)/1000 ));
-        tempY = android_anim.getY() + (values[0] * ((System.currentTimeMillis() - lastTime)/1000 ));
+        tempX = android_anim.getX() + (values[1] * ((System.currentTimeMillis() - lastTime) / 1000));
+        tempY = android_anim.getY() + (values[0] * ((System.currentTimeMillis() - lastTime) / 1000));
 
 
         // Check if the ball is going out of screen along the x-axis
-        if (tempX <= android_anim.getSpriteWidth()/2 || tempX >= ScreenWidth - android_anim.getSpriteWidth()/2)
-        {
-        // Check if ball is still within screen along the y-axis
-            if ( tempY > android_anim.getSpriteHeight()/2 && tempY < ScreenHeight - android_anim.getSpriteHeight()/2) {
-                android_anim.setY((int)tempY); //<-- casted float to inti makes it jerky, needs to change
+        if (tempX <= android_anim.getSpriteWidth() / 2 || tempX >= ScreenWidth - android_anim.getSpriteWidth() / 2) {
+            // Check if ball is still within screen along the y-axis
+            if (tempY > android_anim.getSpriteHeight() / 2 && tempY < ScreenHeight - android_anim.getSpriteHeight() / 2) {
+                android_anim.setY((int) tempY); //<-- casted float to inti makes it jerky, needs to change
             }
         }
 
         // If not, both axis of the ball's position is still within screen
-        else
-        {
-        // Move the ball with frame independant movement
-            android_anim.setX((int)tempX);
-            android_anim.setY((int)tempY);
+        else {
+            // Move the ball with frame independant movement
+            android_anim.setX((int) tempX);
+            android_anim.setY((int) tempY);
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    // Do something here if sensor accuracy changes.
+        // Do something here if sensor accuracy changes.
     }
+
     @Override
     public void onSensorChanged(SensorEvent SenseEvent) {
-    // Many sensors return 3 values, one for each axis
-    // Do something with this sensor value.
+        // Many sensors return 3 values, one for each axis
+        // Do something with this sensor value.
         values = SenseEvent.values;
         //SensorMove(); <--- not using this to move the player no more
     }
@@ -406,7 +396,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
 
-
         //init the position of the player
         float PlayerInitYPos = ScreenHeight * 0.85f;
         //init the position of the enemy
@@ -430,8 +419,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         paint.setTextSize(50);
         paint.setFakeBoldText(true);
         paint.setColor(Color.WHITE);
-       // canvas.drawText("TranslateY" + translateplayerY, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
-        canvas.drawText("ishit" + isHit, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
+        // canvas.drawText("TranslateY" + translateplayerY, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
+        canvas.drawText("showalerttimer: " + AlertTimer, ScreenWidth * 0.2f, ScreenHeight * 0.1f, paint);
 
         //Print score
         canvas.drawText("SCORE: " + score, ScreenWidth * 0.6f, ScreenHeight * 0.1f, paint);
@@ -444,6 +433,18 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     public void update(float dt, float fps) {
         FPS = fps;
 
+        AlertTimer++;
+
+        if (showAlert == true && !showed) {
+            showed = true;
+            showAlert = false;
+            AlertTimer = 0;
+            alert.setMessage("You died. Game Over!");
+            AlertObj.RunAlert();
+
+            //showed = false;
+        }
+
         switch (state) {
             case Play: {
                 // 3) Update the background to allow panning effect
@@ -455,8 +456,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 }
 
                 //brief invulnerability after hit
-                if(isHit == false)
-                {
+                if (isHit == false) {
                     //increment the invulnerability timer
                     invunTime++;
                 }
@@ -466,7 +466,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     isHit = true;
                 }
 
-                System.out.println("invuntime" + invunTime);
                 //set health at 0 if its less than 0
                 if (health <= 0) {
                     health = 0;
@@ -476,8 +475,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     //player is jumping (screen touched)
                     translateplayerY -= 5;
 
-                    if(isJumpSound)
-                    {
+                    if (isJumpSound) {
                         sounds.play(soundjump, 1.0f, 1.0f, 0, 0, 1.5f);
                         isJumpSound = false;
                     }
@@ -495,8 +493,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                     if (translateplayerY < 20) {
                         translateplayerY += 5;
-                    }
-                    else {
+                    } else {
                         translateplayerY = 0;
                         freefall = false;
                     }
@@ -510,8 +507,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 if (translateEnemyX < 0) {
                     //increase score if enemy passed the player
-                    if(enemy_anim.getX() < android_anim.getX())
-                    {
+                    if (enemy_anim.getX() < android_anim.getX()) {
                         score += 10;
                     }
                     translateEnemyX = ScreenWidth - randEnemyTrans_spd;
@@ -552,10 +548,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             score = 0;
                     }
 
+
                     if (health <= 0) {
-                        //showAlert = true;
-                        if(score > highscore)
-                        {
+                        showAlert = true;
+                        if (score > highscore) {
                             highscore = score;
                             editor.putInt("KeyHighscore", highscore);
                             editor.commit();
@@ -579,13 +575,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         }
 
-        if (showAlert == true && !showed) {
-            showed = true;
-            alert.setMessage("You died. Game Over!");
-            AlertObj.RunAlert();
-            showAlert = false;
-            showed = false;
-        }
+
 
     }
 
@@ -594,6 +584,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             canvas.drawBitmap(Pause1.getBitmap(), Pause1.getX(), Pause1.getY(), null);
         }
     }
+
 
     // Rendering is done on Canvas
     public void doDraw(Canvas canvas) {

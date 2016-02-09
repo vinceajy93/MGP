@@ -21,9 +21,7 @@ public class Gamepage extends Activity{
         //making it fullscreen window
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
-
         //set our GamePanelSufaceview as the view
-
         setContentView(new GamePanelSurfaceView(this, this));
 
     }

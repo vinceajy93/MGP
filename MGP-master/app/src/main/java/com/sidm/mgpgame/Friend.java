@@ -1,7 +1,6 @@
 package com.sidm.mgpgame;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -89,6 +88,9 @@ public class Friend extends Activity implements OnClickListener {
             @Override
             public void onCancel() {
                 userName.setText("Login attempt canceled.");
+                ProfilePictureView profilePictureView;
+                profilePictureView = (ProfilePictureView) findViewById(R.id.picture);
+               //profilePictureView.setProfileId();
             }
 
             @Override

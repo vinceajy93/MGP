@@ -101,7 +101,6 @@ public class Homepage extends Activity implements OnClickListener, SensorEventLi
                 finish();
             }
             startActivity(intent);
-            onDestroy();
         } else {
             loadHighscore();
             alert_score.show();
